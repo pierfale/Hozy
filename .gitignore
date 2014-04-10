@@ -1,0 +1,15 @@
+# Executable
+	bin/
+	*.exe
+
+# Object 
+	obj/
+	*.o
+
+# Library
+	*.so
+	*.a
+	*.lib
+
+# Config
+	*.user
