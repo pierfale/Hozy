@@ -2,13 +2,19 @@
 #define MODULE_NETWORK_HPP
 
 #include "tool/Singleton.hpp"
-#include "ModuleManager.hpp"
+#include "Module.hpp"
 
-class ModuleNetwork : public ModuleManager, public Singleton<ModuleNetwork> {
+class NetworkEvent {
+
+
+};
+
+class ModuleNetwork : public Module, public Singleton<ModuleNetwork> {
 
     friend class Singleton<ModuleNetwork>;
 
 protected:
+    ModuleNetwork(){}
     virtual void initialize() {
         std::cout << "init network" << std::endl;
     }

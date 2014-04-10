@@ -3,13 +3,24 @@
 
 #include <vector>
 #include "tool/Singleton.hpp"
-#include "ModuleManager.hpp"
+#include "Module.hpp"
 
-class ModuleView : public ModuleManager, public Singleton<ModuleView> {
+class ViewEvent {
+
+
+};
+
+class NetworkEvent;
+
+class ModuleView : public Module, public Singleton<ModuleView> {
 
     friend class Singleton<ModuleView>;
 
+public:
+    static void network_event_handler(NetworkEvent* event);
+
 protected:
+    ModuleView() {}
     virtual void initialize() {
         std::cout << "init ModuleView" << std::endl;
     }

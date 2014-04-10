@@ -48,9 +48,10 @@ class SingletonManager {
          * @param instance Singleton's instance
          * @param priority Construction/destruction's priority
          */
-        static void add(std::string name, ProtoSingleton** instance, unsigned int priority) {
+
+        static void add(std::string name, ProtoSingleton* instance, unsigned int priority) {
             struct SingletonInfo info;
-            info.instance = *instance;
+            info.instance = instance;
             info.priority = priority;
             _singleton_list.insert(std::pair<std::string,struct SingletonInfo>(name, info));
         }
@@ -108,19 +109,18 @@ public:
     static T* instance() {
         if(_instance == nullptr) {
             std::cerr << "Singleton " << typeid(T).name() << " Unregistered" << std::endl;
-            exit(EXIT_FAILURE);
         }
         return _instance;
     }
 
     /**
-     * @brief register_manager Allow to register instance into manager
+     * @brief register_singleton Allow to register instance into manager
      * @param name Singleton's ID
      * @param priority Construction/destruction's priority
      */
-    static void register_manager(std::string name, unsigned int priority) {
+    static void register_singleton(std::string name, unsigned int priority) {
         _instance = new T;
-        SingletonManager::add(name, (ProtoSingleton**)&_instance, priority);
+        SingletonManager::add(name, _instance, priority);
     }
 
     protected:
