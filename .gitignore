@@ -1,15 +1,28 @@
-# Executable
-	bin/
-	*.exe
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-# Object 
-	obj/
-	*.o
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
 
-# Library
-	*.so
-	*.a
-	*.lib
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
 
-# Config
-	*.user
+# Executables
+*.exe
+*.out
+*.app
+
+# User config
+*.user
+
+# Tempory files
+~*
+*~
