@@ -1,16 +1,27 @@
 #include "ModuleManager.hpp"
+#include "EventManager.hpp"
 #include "view/ModuleView.hpp"
 #include "network/ModuleNetwork.hpp"
+#include "tool/log/Log.hpp"
 #include <iostream>
 
 int main() {
 
+    //Register Log to SingletonManager
+    Log::register_singleton("Log", 0);
+
+    // Exception on singleton : use log before initialize
+    Log::add(new LogStream(&std::cout, LOG_INFO | LOG_DEBUG));
+    Log::add(new LogStream(&std::cerr, LOG_ERROR | LOG_WARNING));
+    Log::add(new LogFile("debug.log", LOG_DEBUG));
+
     //Register the ModuleManager to SingletonManager
-    ModuleManager::register_singleton("ModuleManager", 0);
+    ModuleManager::register_singleton("ModuleManager", 1);
 
     //Register all module to SingletonManager
-    ModuleView::register_singleton("ModuleView", 1);
-    ModuleNetwork::register_singleton("ModuleNetwork", 1);
+    ModuleView::register_singleton("ModuleView", 2);
+    ModuleNetwork::register_singleton("ModuleNetwork", 2);
+
 
     //Initialize all register singleton instance
     SingletonManager::initialize_all();
@@ -20,12 +31,12 @@ int main() {
     ModuleManager::register_module("network", ModuleNetwork::instance());
 
     //Set events handler
-    ModuleManager::set_event_handler("view", "network", ModuleView::network_event_handler);
+    EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
+
+    EventManager<NetworkEvent>::trigger(ModuleNetwork::instance(), new NetworkEvent(23));
 
 
-
-
-
+    //Destroy all registered singleton contains in SingletonManager
     SingletonManager::destroy_all();
     return 0;
 }

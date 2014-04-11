@@ -8,34 +8,28 @@
 
 class Module;
 
+/**
+ * @brief The ModuleManager class is a singleton which contains all registered modules
+ * firend of class Singleton<ModuleManager>
+ */
 class ModuleManager : public Singleton<ModuleManager> {
 
     friend class Singleton<ModuleManager>;
 
 public:
+    /**
+     * @brief register_module : register module
+     * @param name : ID
+     * @param module : module's instance
+     */
     static void register_module(std::string name, Module* module);
 
-    template<class T>
-    static void set_event_handler(std::string owner, std::string target, void(*handler)(T)) {
-        auto it_owner = instance()->_module_list.find(owner);
-        if(it_owner == instance()->_module_list.end())
-            std::cerr << "Module " << owner << " not found" << std::endl;
-        auto it_target = instance()->_module_list.find(target);
-        if(it_target == instance()->_module_list.end())
-            std::cerr << "Module " << target << " not found" << std::endl;
-        std::vector<std::pair<Module*, void(*)(void*)>> vec;
-        vec.push_back(std::pair<Module*, void(*)(void*)>(it_target->second, (void(*)(void*))handler));
-        instance()->_event_trigger.insert(std::pair<Module*, std::vector<std::pair<Module*, void(*)(void*)>>>(it_owner->second, vec));
-    }
-
-
-    template<class T>
-    static void trigger(Module*, T event) {
-        for(const auto& module : instance()->_event_trigger) {
-            for(unsigned int i=0; i<module.second.size(); i++)
-                (module.second.at(i))(event);
-        }
-    }
+    /**
+     * @brief getModule : con throw an exception if the name ID is not found
+     * @param name : ID of the module
+     * @return module's instance associate to the name ID
+     */
+    static Module* getModule(std::string name);
 
 protected:
     ModuleManager() {}
@@ -43,10 +37,10 @@ protected:
     virtual void destroy();
 
 private:
-
+    /**
+     * @brief _module_list : associate module instance with his name ID
+     */
     std::map<std::string, Module*> _module_list;
-    std::map<Module*, std::vector<std::pair<Module*, void(*)(void*)>>> _event_trigger;
-
 };
 
 #endif

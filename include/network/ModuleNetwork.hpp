@@ -6,6 +6,11 @@
 
 class NetworkEvent {
 
+public:
+    NetworkEvent(int n) {
+        _n = n;
+    }
+    int _n;
 
 };
 
