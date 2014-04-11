@@ -16,6 +16,8 @@ int main() {
     Log::add(new LogStream(&std::cerr, LOG_ERROR | LOG_WARNING));
     Log::add(new LogFile("debug.log", LOG_DEBUG | LOG_ERROR));
 
+    Log::lout << "Server start ..." << std::endl;
+
     //Register the ModuleManager to SingletonManager
     ModuleManager::register_singleton("ModuleManager", 1);
 

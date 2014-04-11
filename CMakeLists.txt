@@ -4,29 +4,46 @@ project(Hozy)
 
 #define
 set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Werror -Wall -std=gnu++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -std=gnu++0x")
 
 include_directories(include)
 
 #include file
 file(
-        GLOB_RECURSE
-        include_files
-        include/*
+	GLOB_RECURSE
+	include_files
+	include/*
 )
 
 #src file
 file(
-        GLOB_RECURSE
-        source_files
-        src/*
+	GLOB_RECURSE
+	source_files
+	src/*
 )
 
+
+
+#client
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/client)
+set(client_sources_files ${source_files})
+list(REMOVE_ITEM client_sources_files ${CMAKE_CURRENT_SOURCE_DIR}/src/MainServer.cpp)
 
 add_executable(
-        Game
+	Hozy_Client
 
-        ${include_files}
-	${source_files}
+	${include_files}
+	${client_sources_files}
 )
 
+#server
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/server)
+set(server_sources_files ${source_files})
+list(REMOVE_ITEM server_sources_files ${CMAKE_CURRENT_SOURCE_DIR}/src/MainClient.cpp)
+
+add_executable(
+	Hozy_Server
+
+	${include_files}
+	${server_sources_files}
+)
