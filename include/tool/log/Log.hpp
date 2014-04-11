@@ -1,5 +1,5 @@
-#ifndef LOG_H
-#define LOG_H
+#ifndef LOG_HPP
+#define LOG_HPP
 
 #include <iostream>
 #include <sstream>
@@ -136,7 +136,13 @@ class Log : public Singleton<Log> {
              * @brief lout standard warning log output stream
              */
             static OutStream lwarning;
+            /**
+             * @brief lerr standard error log output stream
+             */
             static OutStream lerr;
+            /**
+             * @brief lerr standard debug log output stream
+             */
             static OutStream ldebug;
 };
 

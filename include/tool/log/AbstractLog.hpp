@@ -1,5 +1,5 @@
-#ifndef ABSTRACT_LOG_H
-#define ABSTRACT_LOG_H
+#ifndef ABSTRACT_LOG_HPP
+#define ABSTRACT_LOG_HPP
 
 #include <string>
 

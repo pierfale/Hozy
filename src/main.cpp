@@ -3,6 +3,7 @@
 #include "view/ModuleView.hpp"
 #include "network/ModuleNetwork.hpp"
 #include "tool/log/Log.hpp"
+#include "tool/error/ErrorManager.hpp"
 #include <iostream>
 
 int main() {
@@ -13,7 +14,7 @@ int main() {
     // Exception on singleton : use log before initialize
     Log::add(new LogStream(&std::cout, LOG_INFO | LOG_DEBUG));
     Log::add(new LogStream(&std::cerr, LOG_ERROR | LOG_WARNING));
-    Log::add(new LogFile("debug.log", LOG_DEBUG));
+    Log::add(new LogFile("debug.log", LOG_DEBUG | LOG_ERROR));
 
     //Register the ModuleManager to SingletonManager
     ModuleManager::register_singleton("ModuleManager", 1);
@@ -32,8 +33,6 @@ int main() {
 
     //Set events handler
     EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
-
-    EventManager<NetworkEvent>::trigger(ModuleNetwork::instance(), new NetworkEvent(23));
 
 
     //Destroy all registered singleton contains in SingletonManager

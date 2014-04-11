@@ -1,5 +1,5 @@
-#ifndef LOG_STD_H
-#define LOG_STD_H
+#ifndef LOG_STD_HPP
+#define LOG_STD_HPP
 
 #include <iostream>
 
