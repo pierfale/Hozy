@@ -36,9 +36,12 @@ int main() {
     //Set events handler
     EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
 
+    ModuleManager::start_thread("view");
+
 
     //Destroy all registered singleton contains in SingletonManager
     SingletonManager::destroy_all();
+
     return 0;
 }
 

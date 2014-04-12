@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <thread>
 #include "tool/Singleton.hpp"
 
 class Module;
@@ -30,6 +31,8 @@ public:
      * @return module's instance associate to the name ID
      */
     static Module* getModule(std::string name);
+
+    static void start_thread(std::string name);
 
 protected:
     ModuleManager() {}

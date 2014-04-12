@@ -1,5 +1,6 @@
 #include "ModuleManager.hpp"
 #include "Module.hpp"
+#include "tool/Thread.hpp"
 
 void ModuleManager::initialize() {
 
@@ -24,4 +25,11 @@ Module* ModuleManager::getModule(std::string name) {
     if(it_module == instance()->_module_list.end())
         std::cerr << "Module " << name << " not found" << std::endl;
     return it_module->second;
+}
+
+void ModuleManager::start_thread(std::string name) {
+    Module* module = getModule(name);
+    Thread thread;
+    thread.create(&Module::run, module, NULL);
+    //std::thread thread(&Module::run, module);
 }

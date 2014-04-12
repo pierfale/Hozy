@@ -18,6 +18,9 @@ class ModuleNetwork : public Module, public Singleton<ModuleNetwork> {
 
     friend class Singleton<ModuleNetwork>;
 
+public:
+    void run(void* arg);
+
 protected:
     ModuleNetwork(){}
     virtual void initialize() {

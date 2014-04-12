@@ -6,6 +6,9 @@
  */
 class Module {
 
+    public:
+        virtual void run(void* arg) = 0;
+
     protected:
         Module();
 };
