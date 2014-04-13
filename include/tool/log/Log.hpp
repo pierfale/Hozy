@@ -30,7 +30,7 @@ class Log : public Singleton<Log> {
     friend class Singleton<Log>;
 
     public:
-        ~Log();
+        ~Log() {}
 
         /**
          * @brief send the message to all output stream added which allow the types of the stream
@@ -47,12 +47,13 @@ class Log : public Singleton<Log> {
 
     protected:
         virtual void initialize() {}
-        virtual void destroy() {}
+        virtual void destroy();
 
 
 
 
     private:
+
         Log();
 
         /**
@@ -75,7 +76,7 @@ class Log : public Singleton<Log> {
                  * flush data when buffer is destroy
                  */
                 ~StringBuf() {
-                    flush();
+
                 }
 
                 /**
@@ -112,7 +113,7 @@ class Log : public Singleton<Log> {
             public:
                 OutStream(int level) : std::ostream(_buffer = new StringBuf(level)) {
 
-                };
+                }
 
                 ~OutStream() {
                     delete _buffer;

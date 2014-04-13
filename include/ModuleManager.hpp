@@ -8,6 +8,7 @@
 #include "tool/Singleton.hpp"
 
 class Module;
+class Thread;
 
 /**
  * @brief The ModuleManager class is a singleton which contains all registered modules
@@ -32,7 +33,7 @@ public:
      */
     static Module* getModule(std::string name);
 
-    static void start_thread(std::string name);
+    static Thread* start_thread(std::string name);
 
 protected:
     ModuleManager() {}

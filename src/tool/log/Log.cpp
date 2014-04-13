@@ -9,7 +9,7 @@ Log::Log() {
 
 }
 
-Log::~Log() {
+void Log::destroy() {
     lout.flush();
     lwarning.flush();
     lerr.flush();
@@ -18,7 +18,6 @@ Log::~Log() {
     for(unsigned int i=0; i<instance()->_logs.size(); i++) {
         delete instance()->_logs[i];
     }
-    _logs.clear();
 }
 
 void Log::send(std::string message, int level) {

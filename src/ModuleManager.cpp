@@ -27,9 +27,9 @@ Module* ModuleManager::getModule(std::string name) {
     return it_module->second;
 }
 
-void ModuleManager::start_thread(std::string name) {
+Thread* ModuleManager::start_thread(std::string name) {
     Module* module = getModule(name);
-    Thread thread;
-    thread.create(&Module::run, module, NULL);
-    //std::thread thread(&Module::run, module);
+    Thread* thread = new Thread();
+    thread->create(&Module::run, module, NULL);
+    return thread;
 }

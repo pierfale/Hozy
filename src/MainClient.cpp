@@ -4,6 +4,8 @@
 #include "network/ModuleNetwork.hpp"
 #include "tool/log/Log.hpp"
 #include "tool/error/ErrorManager.hpp"
+#include "tool/Thread.hpp"
+#include "ThreadManager.hpp"
 #include <iostream>
 
 int main() {
@@ -18,7 +20,8 @@ int main() {
 
     Log::lout << "Client start ..." << std::endl;
 
-    //Register the ModuleManager to SingletonManager
+    //Register the ModuleManager and threadManager to SingletonManager
+    ThreadManager::register_singleton("ThreadManager", 1);
     ModuleManager::register_singleton("ModuleManager", 1);
 
     //Register all module to SingletonManager
@@ -36,8 +39,9 @@ int main() {
     //Set events handler
     EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
 
-    ModuleManager::start_thread("view");
+    Thread* thread_view = ModuleManager::start_thread("view");
 
+    thread_view->join();
 
     //Destroy all registered singleton contains in SingletonManager
     SingletonManager::destroy_all();
