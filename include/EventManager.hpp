@@ -25,12 +25,12 @@ public:
      * @param target : module which trigger event
      * @param handler : function of owner for receive event. need to be static
      */
-    static void set_event_handler(std::string owner, std::string target, void(*handler)(T*)) {
+    static void set_event_handler(const std::string& owner, std::string target, void(*handler)(const T&)) {
         Module* owner_instance = ModuleManager::getModule(owner);
         auto it_owner = _event_trigger.find(owner_instance);
 
         if(it_owner == _event_trigger.end()) {
-            _event_trigger.insert(std::pair<Module*, std::vector<std::pair<Module*, void(*)(T*)>>>(owner_instance, std::vector<std::pair<Module*, void(*)(T*)>>()));
+            _event_trigger.insert(std::pair<Module*, std::vector<std::pair<Module*, void(*)(const T&)>>>(owner_instance, std::vector<std::pair<Module*, void(*)(const T&)>>()));
             it_owner = _event_trigger.find(owner_instance);
         }
 
@@ -41,7 +41,7 @@ public:
                 std::cerr << "Event Handler for " << target << " => " << owner << " already registered" << std::endl;
         }
 
-        it_owner->second.push_back(std::pair<Module*, void(*)(T*)>(target_instance, handler));
+        it_owner->second.push_back(std::pair<Module*, void(*)(const T&)>(target_instance, handler));
 
     }
 
@@ -51,7 +51,7 @@ public:
      * @param transmitter module
      * @param event
      */
-    static void trigger(Module* transmitter, T* event) {
+    static void trigger(Module* transmitter, const T& event) {
         for(const auto& module : _event_trigger) {
             for(unsigned int i=0; i<module.second.size(); i++) {
                 if(module.second.at(i).first == transmitter)
@@ -64,11 +64,11 @@ private:
     /**
      * @brief _event_trigger store handle associate with an owner and a target
      */
-    static std::map<Module*, std::vector<std::pair<Module*, void(*)(T*)>>> _event_trigger;
+    static std::map<Module*, std::vector<std::pair<Module*, void(*)(const T&)>>> _event_trigger;
 };
 
 
 template<class T>
-std::map<Module*, std::vector<std::pair<Module*, void(*)(T*)>>> EventManager<T>::_event_trigger;
+std::map<Module*, std::vector<std::pair<Module*, void(*)(const T&)>>> EventManager<T>::_event_trigger;
 
 #endif

@@ -22,7 +22,7 @@ class SingletonManager {
          * @param instance Singleton's instance
          * @param priority Construction/destruction's priority
          */
-        static void add(std::string name, ProtoSingleton* instance, unsigned int priority);
+        static void add(const std::string& name, ProtoSingleton* instance, unsigned int priority);
 
         /**
          * @brief initialize_all Initialize all Singleton's instances

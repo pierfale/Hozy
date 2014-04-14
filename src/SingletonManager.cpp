@@ -1,7 +1,7 @@
 #include "SingletonManager.hpp"
 #include "tool/log/Log.hpp"
 
-void SingletonManager::add(std::string name, ProtoSingleton* instance, unsigned int priority) {
+void SingletonManager::add(const std::string& name, ProtoSingleton* instance, unsigned int priority) {
     struct SingletonInfo info;
     info.instance = instance;
     info.priority = priority;

@@ -24,16 +24,16 @@ public:
      * @param name : ID
      * @param module : module's instance
      */
-    static void register_module(std::string name, Module* module);
+    static void register_module(const std::string&, Module* module);
 
     /**
      * @brief getModule : con throw an exception if the name ID is not found
      * @param name : ID of the module
      * @return module's instance associate to the name ID
      */
-    static Module* getModule(std::string name);
+    static Module* getModule(const std::string& name);
 
-    static Thread* start_thread(std::string name);
+    static Thread* start_thread(const std::string& name);
 
 protected:
     ModuleManager() {}

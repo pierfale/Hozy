@@ -10,7 +10,7 @@ void ModuleManager::destroy() {
 
 }
 
-void ModuleManager::register_module(std::string name, Module* module) {
+void ModuleManager::register_module(const std::string& name, Module* module) {
     if(instance()->_module_list.find(name) != instance()->_module_list.end()) {
         std::cerr << "Module already register : " << name << std::endl;
         return;
@@ -20,16 +20,16 @@ void ModuleManager::register_module(std::string name, Module* module) {
 
 }
 
-Module* ModuleManager::getModule(std::string name) {
+Module* ModuleManager::getModule(const std::string& name) {
     auto it_module = instance()->_module_list.find(name);
     if(it_module == instance()->_module_list.end())
         std::cerr << "Module " << name << " not found" << std::endl;
     return it_module->second;
 }
 
-Thread* ModuleManager::start_thread(std::string name) {
+Thread* ModuleManager::start_thread(const std::string& name) {
     Module* module = getModule(name);
     Thread* thread = new Thread();
-    thread->create(&Module::run, module, NULL);
+    thread->create(&Module::run, module);
     return thread;
 }

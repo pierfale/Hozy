@@ -19,7 +19,7 @@ class ModuleNetwork : public Module, public Singleton<ModuleNetwork> {
     friend class Singleton<ModuleNetwork>;
 
 public:
-    void run(void* arg);
+    void run();
 
 protected:
     ModuleNetwork(){}

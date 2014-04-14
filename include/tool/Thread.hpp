@@ -20,9 +20,15 @@ public:
 
     }
 
-    template<class Tclass>
-    void create(void(Tclass::*function)(void*), Tclass* instance, void* argument) {
+    template<class Tclass, class Targs>
+    void create(void(Tclass::*function)(void*), Tclass* instance, Targs& argument) {
         impl.create(function, instance, argument);
+        ThreadManager::add(this);
+    }
+
+    template<class Tclass>
+    void create(void(Tclass::*function)(), Tclass* instance) {
+        impl.create(function, instance);
         ThreadManager::add(this);
     }
 
@@ -39,20 +45,6 @@ public:
     }
 
 private:
-    template<class Tclass>
-    struct MemberFunction {
-        MemberFunction(void(Tclass::*function)(void*), Tclass* instance, void* argument) : _function(function), _instance(instance), _argument(argument) {}
-        void(Tclass::*_function)(void*);
-        Tclass* _instance;
-        void* _argument;
-        static long unsigned int run(void* args) {
-            MemberFunction<Tclass>* args_cast = (MemberFunction<Tclass>*)args;
-            ((args_cast->_instance)->*(args_cast->_function))(args_cast->_argument);
-            delete args_cast;
-            return 0;
-        }
-    };
-
     static THREAD_IMPLEMENTATION impl;
 
 

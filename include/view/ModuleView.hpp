@@ -17,8 +17,8 @@ class ModuleView : public Module, public Singleton<ModuleView> {
     friend class Singleton<ModuleView>;
 
 public:
-    void run(void* arg);
-    static void network_event_handler(NetworkEvent* event);
+    void run();
+    static void network_event_handler(const NetworkEvent& event);
 
 protected:
     ModuleView() {}
