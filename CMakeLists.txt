@@ -3,10 +3,20 @@ cmake_minimum_required(VERSION 2.6)
 project(Hozy)
 
 #define
-set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -std=gnu++0x")
+#set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -g -std=c++0x")
 
 include_directories(include)
+aux_source_directory(. SRC_LIST)
+
+#operating system
+if(UNIX)
+	set(OS "UNIX")
+endif()
+if(WIN32)
+	set(OS "WIN32")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${OS}")
 
 #include file
 file(
@@ -25,7 +35,7 @@ file(
 
 
 #client
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/client)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/client)
 set(client_sources_files ${source_files})
 list(REMOVE_ITEM client_sources_files ${CMAKE_CURRENT_SOURCE_DIR}/src/MainServer.cpp)
 
@@ -37,7 +47,7 @@ add_executable(
 )
 
 #server
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/server)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/server)
 set(server_sources_files ${source_files})
 list(REMOVE_ITEM server_sources_files ${CMAKE_CURRENT_SOURCE_DIR}/src/MainClient.cpp)
 
