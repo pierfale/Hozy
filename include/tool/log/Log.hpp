@@ -19,7 +19,6 @@ enum LogType {
     LOG_INFO        = 1,
     LOG_WARNING     = 1 << 1,
     LOG_ERROR       = 1 << 2,
-    LOG_CRITICAL    = 1 << 3,
     LOG_DEBUG       = 1 << 4
 };
 

@@ -6,6 +6,11 @@
 #ifdef WIN32
 #include "os/win32/ThreadImpl_win32.hpp"
 #define THREAD_IMPLEMENTATION ThreadImpl_win32
+#elif defined UNIX
+#include "os/unix/ThreadImpl_unix.hpp"
+#define THREAD_IMPLEMENTATION ThreadImpl_unix
+#else
+#error "This Operating system is unssuported"
 #endif
 
 class Thread {
@@ -34,6 +39,20 @@ public:
     }
 
 private:
+    template<class Tclass>
+    struct MemberFunction {
+        MemberFunction(void(Tclass::*function)(void*), Tclass* instance, void* argument) : _function(function), _instance(instance), _argument(argument) {}
+        void(Tclass::*_function)(void*);
+        Tclass* _instance;
+        void* _argument;
+        static long unsigned int run(void* args) {
+            MemberFunction<Tclass>* args_cast = (MemberFunction<Tclass>*)args;
+            ((args_cast->_instance)->*(args_cast->_function))(args_cast->_argument);
+            delete args_cast;
+            return 0;
+        }
+    };
+
     static THREAD_IMPLEMENTATION impl;
 
 

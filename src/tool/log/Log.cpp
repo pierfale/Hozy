@@ -2,7 +2,7 @@
 
 Log::OutStream Log::lout(LOG_INFO);
 Log::OutStream Log::lwarning(LOG_WARNING);
-Log::OutStream Log::lerr(LOG_ERROR | LOG_CRITICAL);
+Log::OutStream Log::lerr(LOG_ERROR);
 Log::OutStream Log::ldebug(LOG_DEBUG);
 
 Log::Log() {
