@@ -9,13 +9,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -g -std=c++0x")
 include_directories(include)
 aux_source_directory(. SRC_LIST)
 
+
+
 #operating system
 if(UNIX)
 	set(OS "UNIX")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 endif()
 if(WIN32)
 	set(OS "WIN32")
 endif()
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${OS}")
 
 #include file

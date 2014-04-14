@@ -7,11 +7,11 @@ ThreadImpl_unix::ThreadImpl_unix() {
 }
 
 void ThreadImpl_unix::join() {
-    pthread_join(_id, NULL);
+    pthread_join(_thread, NULL);
 }
 
 int ThreadImpl_unix::id() {
-    return (int)_id;
+    return (unsigned int)_thread;
 }
 
 int ThreadImpl_unix::get_current_thread_id() {

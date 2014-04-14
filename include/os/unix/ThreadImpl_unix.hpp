@@ -4,6 +4,8 @@
 #ifdef UNIX
 
 #include <iostream>
+#include <string.h>
+#include <pthread.h>
 #include "tool/Convert.hpp"
 #include "tool/error/ErrorManager.hpp"
 #include "tool/log/Log.hpp"
@@ -17,8 +19,8 @@ public:
     void create(void(Tclass::*function)(void*), Tclass* instance, void* argument) {
         MemberFunction<Tclass>* arg = new MemberFunction<Tclass>(function, instance, argument);
 
-        if(pthread_create(&_id, NULL, MemberFunction<Tclass>::run, arg) != 0) {
-            fatal_error("Thread create error : "+strerror(errno));
+        if(pthread_create(&_thread, NULL, MemberFunction<Tclass>::run, arg) != 0) {
+            fatal_error("Thread create error : "+std::string(strerror(errno)))
         }
     }
 
@@ -33,15 +35,15 @@ private:
         void(Tclass::*_function)(void*);
         Tclass* _instance;
         void* _argument;
-        static long unsigned int run(void* args) {
+        static void* run(void* args) {
             MemberFunction<Tclass>* args_cast = (MemberFunction<Tclass>*)args;
             ((args_cast->_instance)->*(args_cast->_function))(args_cast->_argument);
             delete args_cast;
-            return 0;
+            return nullptr;
         }
     };
 
-    pthread_t _id;
+    pthread_t _thread;
 
 
 };
