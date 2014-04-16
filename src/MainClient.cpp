@@ -8,6 +8,10 @@
 #include "ThreadManager.hpp"
 #include <iostream>
 
+void test() {
+    std::cout << ">>OK!" << std::endl;
+}
+
 int main() {
 
     //Register Log to SingletonManager

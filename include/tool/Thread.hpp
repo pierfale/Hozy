@@ -20,15 +20,15 @@ public:
 
     }
 
-    template<class Tclass, class Targs>
-    void create(void(Tclass::*function)(void*), Tclass* instance, Targs& argument) {
-        impl.create(function, instance, argument);
+    template<class Tclass, class Treturn = void, class... Targs>
+    void create(const MemberFunction<Tclass, Treturn, Targs...>& function) {
+        impl.create(function);
         ThreadManager::add(this);
     }
 
-    template<class Tclass>
-    void create(void(Tclass::*function)(), Tclass* instance) {
-        impl.create(function, instance);
+    template<class Tclass, class Treturn = void, class... Targs>
+    void create(const Function<Treturn, Targs...>& function) {
+        impl.create(function);
         ThreadManager::add(this);
     }
 

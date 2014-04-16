@@ -30,6 +30,7 @@ Module* ModuleManager::getModule(const std::string& name) {
 Thread* ModuleManager::start_thread(const std::string& name) {
     Module* module = getModule(name);
     Thread* thread = new Thread();
-    thread->create(&Module::run, module);
+    std::cout << "module : " << module << "Module::run : " << &Module::run << std::endl;
+    thread->create(MemberFunction<Module, void, int>(module, &Module::run, 23));
     return thread;
 }

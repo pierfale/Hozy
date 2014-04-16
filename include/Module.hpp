@@ -7,7 +7,7 @@
 class Module {
 
     public:
-        virtual void run() = 0;
+        virtual void run(int t) {}
 
     protected:
         Module();
