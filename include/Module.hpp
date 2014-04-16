@@ -7,7 +7,11 @@
 class Module {
 
     public:
-        virtual void run(int t) {}
+
+        /**
+         * @brief run method call when module runtime start
+         */
+        virtual void run() = 0;
 
     protected:
         Module();

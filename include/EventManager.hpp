@@ -26,7 +26,7 @@ public:
      * @param handler : function of owner for receive event. need to be static
      */
     static void set_event_handler(const std::string& owner, std::string target, void(*handler)(const T&)) {
-        Module* owner_instance = ModuleManager::getModule(owner);
+        Module* owner_instance = ModuleManager::get_module(owner);
         auto it_owner = _event_trigger.find(owner_instance);
 
         if(it_owner == _event_trigger.end()) {
@@ -34,7 +34,7 @@ public:
             it_owner = _event_trigger.find(owner_instance);
         }
 
-        Module* target_instance = ModuleManager::getModule(target);
+        Module* target_instance = ModuleManager::get_module(target);
 
         for(const auto& event_handler : it_owner->second) {
             if(event_handler.first == target_instance)

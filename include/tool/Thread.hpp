@@ -2,6 +2,7 @@
 #define THREAD_HPP
 
 #include "ThreadManager.hpp"
+#include "tool/Function.hpp"
 
 #ifdef WIN32
 #include "os/win32/ThreadImpl_win32.hpp"
@@ -20,13 +21,13 @@ public:
 
     }
 
-    template<class Tclass, class Treturn = void, class... Targs>
-    void create(const MemberFunction<Tclass, Treturn, Targs...>& function) {
-        impl.create(function);
+    template<class Tclass, class Treturn, class... Targs>
+    void create(const MemberFunction<Tclass, Treturn, Targs...>& function, Targs... arguments) {
+        impl.create(function, arguments...);
         ThreadManager::add(this);
     }
 
-    template<class Tclass, class Treturn = void, class... Targs>
+    template<class Tclass, class Treturn, class... Targs>
     void create(const Function<Treturn, Targs...>& function) {
         impl.create(function);
         ThreadManager::add(this);

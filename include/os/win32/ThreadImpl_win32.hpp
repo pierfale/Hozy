@@ -9,14 +9,15 @@
 #include "tool/error/ErrorManager.hpp"
 #include "tool/log/Log.hpp"
 #include "tool/Convert.hpp"
+#include "tool/Function.hpp"
 
 class ThreadImpl_win32 {
 
-    friend class Thread;
+   // friend class Thread;
 
 public:
     ThreadImpl_win32();
-
+/*
     template<class Tclass>
     void create(void(Tclass::*function)(), Tclass* instance) {
         MemberFunction<Tclass>* arg = new MemberFunction<Tclass>(function, instance);
@@ -25,13 +26,13 @@ public:
 
         if(_thread == NULL)
             fatal_error("Thread create error : "+Ct::to_string((int)GetLastError()));
-    }
+    }*/
 
-    template<class Tclass, class Targs>
-    void create(void(Tclass::*function)(Targs&), Tclass* instance, Targs& argument) {
-        MemberFunctionArgs<Tclass, Targs>* arg = new MemberFunctionArgs<Tclass, Targs>(function, instance, argument);
-
-        _thread = CreateThread(NULL, 0, MemberFunctionArgs<Tclass, Targs>::run, arg, 0, &_id);
+    template<class Tclass, class Treturn, class... Targs>
+    void create(const MemberFunction<Tclass, Treturn, Targs...>& function, Targs... arguments) {
+        MemberFunction<Tclass, Treturn, Targs...>* handler = new MemberFunction<Tclass, Treturn, Targs...>(function);
+        handler->save_parameter(arguments...);
+        _thread = CreateThread(NULL, 0, proxy<Tclass, Treturn, Targs...>, handler, 0, &_id);
 
         if(_thread == NULL)
             fatal_error("Thread create error : "+Ct::to_string((int)GetLastError()));
@@ -42,30 +43,14 @@ public:
     static int get_current_thread_id();
 
 private:
-    template<class Tclass>
-    struct MemberFunction {
-        MemberFunction(void(Tclass::*function)(), Tclass* instance) : _function(function), _instance(instance) {}
-        void(Tclass::*_function)();
-        Tclass* _instance;
-        static long unsigned int run(void* args) {
-            MemberFunction<Tclass>* args_cast = (MemberFunction<Tclass>*)args;
-            ((args_cast->_instance)->*(args_cast->_function))();
-            delete args_cast;
-            return 0;
-        }
-    };
+    template<class Tclass, class Treturn, class... Targs>
+    static long unsigned int proxy(void* arg) {
+        MemberFunction<Tclass, Treturn, Targs...>* handler = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
+        MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
+        delete handler;
+        return 0;
+    }
 
-    template<class Tclass, class Targs>
-    struct MemberFunctionArgs : MemberFunction<Tclass> {
-        MemberFunctionArgs(void(Tclass::*function)(Targs&), Tclass* instance, Targs& argument) : MemberFunction<Tclass>(function, instance), _argument(argument) {}
-        Targs& _argument;
-        static long unsigned int run(void* args) {
-            MemberFunctionArgs<Tclass, Targs>* args_cast = (MemberFunctionArgs<Tclass, Targs>*)args;
-            ((args_cast->_instance)->*((void(Tclass::*)(Targs&))args_cast->_function))(args_cast->_argument);
-            delete args_cast;
-            return 0;
-        }
-    };
 
     DWORD _id;
     HANDLE _thread;

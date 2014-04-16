@@ -6,5 +6,5 @@ void ModuleView::network_event_handler(const NetworkEvent& event) {
 }
 
 void ModuleView::run() {
-    std::cout << "Running" << std::endl;
+    std::cout << "Running : " << std::endl;
 }

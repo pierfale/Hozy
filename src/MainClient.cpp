@@ -6,10 +6,11 @@
 #include "tool/error/ErrorManager.hpp"
 #include "tool/Thread.hpp"
 #include "ThreadManager.hpp"
+#include "tool/Function.hpp"
 #include <iostream>
 
-void test() {
-    std::cout << ">>OK!" << std::endl;
+void test(int a, float b) {
+    std::cout << ">>OK! => " << a << "-" << b << std::endl;
 }
 
 int main() {
@@ -45,10 +46,14 @@ int main() {
 
     Thread* thread_view = ModuleManager::start_thread("view");
 
+    MemberFunction<Module, void> fun(ModuleManager::get_module("view"), &Module::run);
+
+
     thread_view->join();
 
     //Destroy all registered singleton contains in SingletonManager
     SingletonManager::destroy_all();
+
 
     return 0;
 }

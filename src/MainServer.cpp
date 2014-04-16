@@ -22,7 +22,6 @@ int main() {
     ModuleManager::register_singleton("ModuleManager", 1);
 
     //Register all module to SingletonManager
-    ModuleView::register_singleton("ModuleView", 2);
     ModuleNetwork::register_singleton("ModuleNetwork", 2);
 
 
@@ -30,11 +29,10 @@ int main() {
     SingletonManager::initialize_all();
 
     //Register module to ModuleManager
-    ModuleManager::register_module("view", ModuleView::instance());
     ModuleManager::register_module("network", ModuleNetwork::instance());
 
     //Set events handler
-    EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
+    //EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
 
 
     //Destroy all registered singleton contains in SingletonManager

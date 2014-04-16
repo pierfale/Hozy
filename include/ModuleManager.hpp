@@ -27,11 +27,11 @@ public:
     static void register_module(const std::string&, Module* module);
 
     /**
-     * @brief getModule : con throw an exception if the name ID is not found
+     * @brief get_module : con throw an exception if the name ID is not found
      * @param name : ID of the module
      * @return module's instance associate to the name ID
      */
-    static Module* getModule(const std::string& name);
+    static Module* get_module(const std::string& name);
 
     static Thread* start_thread(const std::string& name);
 

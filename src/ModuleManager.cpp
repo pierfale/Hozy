@@ -1,6 +1,7 @@
 #include "ModuleManager.hpp"
 #include "Module.hpp"
 #include "tool/Thread.hpp"
+#include "tool/Function.hpp"
 
 void ModuleManager::initialize() {
 
@@ -20,7 +21,7 @@ void ModuleManager::register_module(const std::string& name, Module* module) {
 
 }
 
-Module* ModuleManager::getModule(const std::string& name) {
+Module* ModuleManager::get_module(const std::string& name) {
     auto it_module = instance()->_module_list.find(name);
     if(it_module == instance()->_module_list.end())
         std::cerr << "Module " << name << " not found" << std::endl;
@@ -28,9 +29,8 @@ Module* ModuleManager::getModule(const std::string& name) {
 }
 
 Thread* ModuleManager::start_thread(const std::string& name) {
-    Module* module = getModule(name);
+    Module* module = get_module(name);
     Thread* thread = new Thread();
-    std::cout << "module : " << module << "Module::run : " << &Module::run << std::endl;
-    thread->create(MemberFunction<Module, void, int>(module, &Module::run, 23));
+    thread->create(MemberFunction<Module, void>(module, &Module::run));
     return thread;
 }

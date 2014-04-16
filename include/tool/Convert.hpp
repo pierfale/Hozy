@@ -14,6 +14,12 @@ public:
         return s.str();
     }
 
+    static std::string to_string(unsigned int i) {
+        std::stringstream s;
+        s << i;
+        return s.str();
+    }
+
 };
 
 #endif
