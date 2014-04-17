@@ -1,9 +1,5 @@
 #include "network/ModuleNetwork.hpp"
 
-#ifdef WIN32
-#include <winsock2.h>
-#endif
-
 void ModuleNetwork::initialize() {
 #ifdef WIN32
     WSADATA wsa;

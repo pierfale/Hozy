@@ -2,7 +2,7 @@
 #define EXCEPTION_HPP
 
 #ifdef WIN32
-
+#include <windows.h>
 #elif defined UNIX
 #include "string.h"
 #endif
@@ -25,19 +25,27 @@ public:
     }
 
     virtual const char* what() const throw() {
-        return std::string("[Error] "+get_error_message(static_cast<ErrorCode>(_error_code))+(_os_error_code != 0 ? " | Os error : "+os_message(_os_error_code) : "")+"\n"+_file+" in "+_function+" at line "+ct::to_string(_line)).c_str();
+		/*std::cout << get_error_message(static_cast<ErrorCode>(_error_code)) <<  std::endl;
+		std::cout << os_message(_os_error_code) <<  std::endl;*/
+
+		return std::string("[Error] "+get_error_message(static_cast<ErrorCode>(_error_code))+(_os_error_code != 0 ? " | Os error : "+os_message(_os_error_code) : "")+"\n"+_file+" in "+_function+" at line "+ct::to_string(_line)).c_str();
     }
 
-    int error_code() {
+	int error_code() const {
         return _error_code;
     }
 
 private:
     static std::string os_message(int os_error_code) {
 #ifdef WIN32
-        return to_string(os_error_code);
+		char *err;
+		if (!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, os_error_code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &err, 0, NULL))
+			return "";
+		std::string msg(std::string(err)+" ("+ct::to_string(os_error_code)+")");
+		LocalFree(err);
+		return msg;
 #elif defined UNIX
-        return strerror(os_error_code);
+		return strerror(os_error_code)+" ("+ct::to_string(os_error_code)+")");
 #endif
     }
 

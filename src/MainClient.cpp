@@ -45,7 +45,7 @@ int main() {
         Thread* thread_view = ModuleManager::start_thread("view");
 
         SocketTcp sock;
-        sock.connect(NetAddress::getByName("www.google.com"), 80);
+		sock.connect(NetAddress("www.google.com"), 80);
 
 
         thread_view->join();
@@ -54,8 +54,10 @@ int main() {
         SingletonManager::destroy_all();
 
     }
-    catch(Exception& e) {
-        std::cerr << e.what() << std::endl;
+	catch(Exception const& e) {
+		std::cerr.flush();
+		std::cerr << std::string(e.what()) << std::endl;
+		std::cerr.flush();
         return e.error_code();
     }
 
