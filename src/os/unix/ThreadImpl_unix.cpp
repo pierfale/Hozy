@@ -7,7 +7,9 @@ ThreadImpl_unix::ThreadImpl_unix() {
 }
 
 void ThreadImpl_unix::join() {
-    pthread_join(_thread, NULL);
+    int err = pthread_join(_thread, NULL);
+    if(err!= 0)
+        throw_error_os(E_THREAD_JOIN_FAILED, err);
 }
 
 int ThreadImpl_unix::id() {

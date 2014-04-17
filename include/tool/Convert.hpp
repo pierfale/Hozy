@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 
-class Ct {
+class ct {
 public:
 
     static std::string to_string(int i) {

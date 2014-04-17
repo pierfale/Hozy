@@ -16,28 +16,14 @@ class ThreadImpl_unix {
 public:
     ThreadImpl_unix();
 
-    template<class Tclass, class Treturn = void, class... Targs>
-    void create(const MemberFunction<Tclass, Treturn, Targs...>& function) {
-        if(pthread_create(&_thread, NULL, unix_static_call<Tclass, Treturn, Targs...>, (void*)&function) != 0) {
-            fatal_error("Thread create error : "+std::string(strerror(errno)))
-        }
-
-        /*
-
-        MemberFunction<Tclass>* arg = new MemberFunction<Tclass>(function, instance);
-
-        if(pthread_create(&_thread, NULL, MemberFunction<Tclass>::run, arg) != 0) {
-            fatal_error("Thread create error : "+std::string(strerror(errno)))
-        }*/
-    }
-
     template<class Tclass, class Treturn, class... Targs>
-    void create(const Function<Treturn, Targs...>& function) {
-     /*   MemberFunction<Tclass>* arg = new MemberFunction<Tclass>(function, instance, argument);
+    void create(const MemberFunction<Tclass, Treturn, Targs...>& function, Targs... arguments) {
+        MemberFunction<Tclass, Treturn, Targs...>* handler = new MemberFunction<Tclass, Treturn, Targs...>(function);
+        handler->save_parameter(arguments...);
+        int err = pthread_create(&_thread, NULL, proxy_member<Tclass, Treturn, Targs...>, handler);
 
-        if(pthread_create(&_thread, NULL, MemberFunction<Tclass>::run, arg) != 0) {
-            fatal_error("Thread create error : "+std::string(strerror(errno)))
-        }*/
+        if(err != 0)
+            throw_error_os(E_THREAD_CREATE_FAILED, err);
     }
 
     void join();
@@ -48,11 +34,13 @@ private:
     pthread_t _thread;
 
     template<class Tclass, class Treturn, class... Targs>
-    static void* unix_static_call(void* arg) {
-        MemberFunction<Tclass, Treturn, Targs...>* function = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
-        function->call();
-        return NULL;
+    static void* proxy_member(void* arg) {
+        MemberFunction<Tclass, Treturn, Targs...>* handler = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
+        MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
+        delete handler;
+        return nullptr;
     }
+
 
 
 };

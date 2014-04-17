@@ -23,13 +23,8 @@ public:
 
 protected:
     ModuleNetwork(){}
-    virtual void initialize() {
-        std::cout << "init network" << std::endl;
-    }
-
-    virtual void destroy() {
-        std::cout << "destroy network" << std::endl;
-    }
+    virtual void initialize();
+    virtual void destroy();
 
 };
 
