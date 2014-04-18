@@ -68,7 +68,7 @@ public:
     /**
      * @brief Function initiliasize call with null function pointor
      */
-    Function() : _function(nullptr) {
+    Function() : _function(nullptr), _arguments() {
 
     }
 
@@ -113,16 +113,16 @@ public:
      * @return
      */
     virtual Treturn call_saved_args() {
-       _arguments.call(_function);
+        _arguments.call(_function);
     }
 
     static Treturn static_call(Function<Treturn, Targs...>& function, Targs... arguments) {
         return function.call(arguments...);
     }
 
-   static Treturn static_call_with_saved_args(Function<Treturn, Targs...>& function) {
-       return function.call_saved_args();
-   }
+    static Treturn static_call_with_saved_args(Function<Treturn, Targs...>& function) {
+        return function.call_saved_args();
+    }
 
 private:
     Treturn(*_function)(Targs...) ;
@@ -134,12 +134,12 @@ template<class Tclass, class Treturn, class... Targs>
 class MemberFunction : Function<Treturn, Targs...> {
 
 public:
-    MemberFunction(Tclass* instance, Treturn(Tclass::*function)(Targs...)) : _instance(instance), _member_function(function) {
+    MemberFunction(Tclass* instance, Treturn(Tclass::*function)(Targs...)) : _instance(instance), _member_function(function), _arguments() {
 
     }
 
-    MemberFunction(const MemberFunction& copy) : Function<Treturn, Targs...>(copy), _instance(copy._instance), _member_function(copy._member_function) {
-
+    MemberFunction(const MemberFunction& copy) : Function<Treturn, Targs...>(copy), _instance(nullptr), _member_function(nullptr), _arguments() {
+        operator=(copy);
     }
 
     Treturn call(Targs... arguments) {
@@ -158,9 +158,16 @@ public:
         return function.call(arguments...);
     }
 
-   static Treturn static_call_with_saved_args(MemberFunction<Tclass, Treturn, Targs...>& function) {
-       return function.call_saved_args();
-   }
+    static Treturn static_call_with_saved_args(MemberFunction<Tclass, Treturn, Targs...>& function) {
+        return function.call_saved_args();
+    }
+
+    MemberFunction& operator=(const MemberFunction& origin) {
+        _instance = origin._instance;
+        _member_function = origin._member_function;
+        _arguments = origin._arguments;
+        return *this;
+    }
 
 private:
     Tclass* _instance;

@@ -16,7 +16,7 @@ protected:
     void destroy();
 
 private:
-    ThreadManager() {}
+    ThreadManager();
     std::vector<Thread*> _thread_list;
 
 };

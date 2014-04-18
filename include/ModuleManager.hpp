@@ -36,7 +36,7 @@ public:
     static Thread* start_thread(const std::string& name);
 
 protected:
-    ModuleManager() {}
+    ModuleManager();
     virtual void initialize();
     virtual void destroy();
 

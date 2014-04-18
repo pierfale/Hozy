@@ -12,10 +12,9 @@
 class NetworkEvent {
 
 public:
-    NetworkEvent(int n) {
-        _n = n;
+    NetworkEvent() {
+
     }
-    int _n;
 
 };
 

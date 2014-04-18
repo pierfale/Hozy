@@ -2,6 +2,8 @@
 #define BUFFER_HPP
 
 #define ALLOCATION_UNIT 64
+#include <cstring>
+#include "tool/error/ErrorManager.hpp"
 
 template<class T>
 /**
@@ -13,14 +15,18 @@ public:
     /**
      * @brief Buffer construct buffer and allocate ALLOCATION_UNIT octet
      */
-    Buffer() : _allocated(ALLOCATION_UNIT*sizeof(T)), _cursor(0) {
+    Buffer() : _buffer(nullptr), _allocated(ALLOCATION_UNIT*sizeof(T)), _cursor(0) {
         _buffer = (T*)malloc(_allocated);
+    }
+
+    Buffer(const Buffer<T>& origin) : _buffer(nullptr), _allocated(0), _cursor(0) {
+        operator=(origin);
     }
 
     /**
      * Free the busy space by buffer
      */
-    ~Buffer() {
+    virtual ~Buffer() {
         free(_buffer);
     }
 
@@ -46,11 +52,19 @@ public:
         _cursor += size;
     }
 
+    T* get(unsigned int cursor) {
+        if(cursor >= _cursor) {
+            throw_error(E_OUT_OF_RANGE);
+        }
+        return _buffer+cursor;
+
+    }
+
     /**
      * @brief size of the data contains in the buffer
      * @return
      */
-    unsigned int size() {
+    unsigned int get_size() {
         return _cursor;
     }
 
@@ -65,7 +79,7 @@ public:
      * @brief base return pointor to the begining of the buffer
      * @return
      */
-    T* base() {
+    T* get_base() {
         return _buffer;
     }
 
@@ -73,8 +87,16 @@ public:
      * @brief ptr return pointer to the end of the data
      * @return
      */
-    T* ptr() {
+    T* get_ptr() {
         return _buffer+_cursor;
+    }
+
+    Buffer<T>& operator=(const Buffer<T>& origin) {
+        _allocated = origin._allocated;
+        _cursor = origin._cursor;
+        _buffer = (T*)malloc(_allocated);
+        std::memcpy(_buffer, origin._buffer, _cursor);
+        return *this;
     }
 
 private:

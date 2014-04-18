@@ -1,10 +1,13 @@
 #ifndef SOCKET_TCP_HPP
 #define SOCKET_TCP_HPP
 
+#define PACKET_CHECK 0x9C4A
+
 #ifdef UNIX
 #define SOCKET int
 #define INVALID_SOCKET -1
 #define ERR_NO errno
+#define closesocket(sck) close(sck)
 #elif defined WIN32
 #include <winsock2.h>
 #include <windows.h>
@@ -20,10 +23,12 @@ class SocketTcp {
 
 public:
     SocketTcp();
+    ~SocketTcp();
 
 	void connect(const NetAddress& address, unsigned int port);
 	void receive(Packet& packet);
 	void send(Packet& packet);
+    void close();
 
 private:
 	SOCKET _socket;

@@ -2,6 +2,10 @@
 #include "tool/Thread.hpp"
 #include "tool/log/Log.hpp"
 
+ThreadManager::ThreadManager() : _thread_list() {
+
+}
+
 void ThreadManager::initialize() {
     Log::ldebug << "[ThreadManager] Main thread " << Thread::get_current_thread_id() << std::endl;
 }

@@ -3,6 +3,10 @@
 #include "tool/Thread.hpp"
 #include "tool/Function.hpp"
 
+ModuleManager::ModuleManager() : _module_list() {
+
+}
+
 void ModuleManager::initialize() {
 
 }

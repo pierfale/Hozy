@@ -13,7 +13,7 @@ class LogFile : public AbstractLog {
 public:
     /// Create a file in specified path
     LogFile(std::string path);
-    LogFile(std::string path, int level);
+    LogFile(std::string path, int type_accept);
     ~LogFile();
     void send(std::string message);
 

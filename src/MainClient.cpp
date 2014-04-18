@@ -45,7 +45,7 @@ int main() {
         Thread* thread_view = ModuleManager::start_thread("view");
 
         SocketTcp sock;
-		sock.connect(NetAddress("www.google.com"), 80);
+        //sock.connect(NetAddress("127.0.0.1"), 2342);
 
 
         thread_view->join();
@@ -58,7 +58,7 @@ int main() {
 		std::cerr.flush();
 		std::cerr << std::string(e.what()) << std::endl;
 		std::cerr.flush();
-        return e.error_code();
+        return e.get_error_code();
     }
 
     return 0;
