@@ -6,6 +6,8 @@
 
 class Packet {
 
+    friend class SocketTcp;
+
 public:
 	Packet();
 

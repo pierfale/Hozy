@@ -60,6 +60,14 @@ public:
 
     }
 
+    void reserve(std::size_t size) {
+        check_allocated_space(_buffer+_cursor, size);
+    }
+
+    void bump(int n) {
+        _cursor += n;
+    }
+
     /**
      * @brief size of the data contains in the buffer
      * @return

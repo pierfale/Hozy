@@ -18,6 +18,7 @@ if(UNIX)
 endif()
 if(WIN32)
 	set(OS "WIN32")
+	
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${OS}")
@@ -50,6 +51,11 @@ add_executable(
 	${client_sources_files}
 )
 
+#client lib
+if(WIN32)
+	target_link_libraries(Hozy_Client Ws2_32.lib)
+endif()
+
 #server
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/server)
 set(server_sources_files ${source_files})
@@ -61,3 +67,8 @@ add_executable(
 	${include_files}
 	${server_sources_files}
 )
+
+#server lib
+if(WIN32)
+	target_link_libraries(Hozy_Server Ws2_32.lib)
+endif()

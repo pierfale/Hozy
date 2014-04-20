@@ -32,7 +32,7 @@ public:
 	void create(const MemberFunction<Tclass, Treturn, Targs...>& function, Targs... arguments) {
 		MemberFunction<Tclass, Treturn, Targs...>* handler = new MemberFunction<Tclass, Treturn, Targs...>(function);
 		handler->save_parameter(arguments...);
-		_thread = CreateThread(NULL, 0, proxy_member<Tclass, Treturn, Targs...>, handler, 0, &_id);
+        _thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)proxy_member<Tclass, Treturn, Targs...>, handler, 0, &_id);
 
 		if(_thread == NULL)
 			throw_error_os(E_THREAD_CREATE_FAILED, GetLastError());

@@ -1,6 +1,6 @@
 #include "network/SocketTcp.hpp"
 
-SocketTcp::SocketTcp() : _socket(-1) {
+SocketTcp::SocketTcp() : _socket(0) {
 
 }
 
@@ -48,11 +48,14 @@ void SocketTcp::connect(const NetAddress& address, unsigned int port) {
 }
 
 void SocketTcp::receive(Packet& packet) {
+    if(_socket == 0)
+        throw_error(E_SOCKET_CLOSED);
+
     uint32_t header;
 
     int err;
 
-    if((err = recv(_socket, &header, sizeof(uint32_t), 0)) == -1) {
+    if((err = recv(_socket, (char*)&header, sizeof(uint32_t), 0)) == -1) {
         throw_error_os(E_SOCKET_RECEIVE_FAILED, ERR_NO);
     }
 
@@ -61,7 +64,7 @@ void SocketTcp::receive(Packet& packet) {
         throw_error(E_SOCKET_CLOSED);
     }
 
-    if(err < sizeof(uint32_t)) {
+    if(err < (int)sizeof(uint32_t)) {
         close();
         throw_error(E_SOCKET_DATA);
     }
@@ -78,7 +81,7 @@ void SocketTcp::receive(Packet& packet) {
     packet._buffer.reserve(size);
 
     do {
-        if((err = recv(_socket, packet._buffer.get_ptr(), size-curr, 0)) == -1) {
+        if((err = recv(_socket, (char*)packet._buffer.get_ptr(), size-curr, 0)) == -1) {
             throw_error_os(E_SOCKET_RECEIVE_FAILED, ERR_NO);
         }
 
@@ -95,12 +98,13 @@ void SocketTcp::receive(Packet& packet) {
 }
 
 void SocketTcp::send(Packet& packet) {
-
+    if(_socket == 0)
+        throw_error(E_SOCKET_CLOSED);
 }
 
 void SocketTcp::close() {
-    if(_socket == -1) {
+    if(_socket == 0) {
         closesocket(_socket);
-        _socket = -1;
+        _socket = 0;
     }
 }

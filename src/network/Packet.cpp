@@ -2,16 +2,16 @@
 
 Packet::Packet() : _buffer(), _out_cursor(0) {
     uint32_t size = 0;
-    _buffer.add(&size, sizeof(uint32_t ));
+    _buffer.add((uint8_t*)&size, sizeof(uint32_t ));
 }
 
 Packet& Packet::operator<<(int32_t data) {
-    _buffer.add(&data, sizeof(int32_t));
+    _buffer.add((uint8_t*)&data, sizeof(int32_t));
     return *this;
 }
 
 Packet& Packet::operator<<(uint32_t data) {
-    _buffer.add(&data, sizeof(uint32_t));
+    _buffer.add((uint8_t*)&data, sizeof(uint32_t));
     return *this;
 }
 
