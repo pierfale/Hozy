@@ -9,8 +9,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -g -std=c++0x")
 include_directories(include)
 aux_source_directory(. SRC_LIST)
 
-
-
 #operating system
 if(UNIX)
 	set(OS "UNIX")
@@ -50,6 +48,9 @@ add_executable(
 	${client_sources_files}
 )
 
+target_link_libraries(Hozy_Client "ws2_32.lib")
+target_link_libraries(Hozy_Client "DbgHelp.lib")
+
 #server
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/server)
 set(server_sources_files ${source_files})
@@ -61,3 +62,6 @@ add_executable(
 	${include_files}
 	${server_sources_files}
 )
+
+target_link_libraries(Hozy_Server "ws2_32.lib")
+target_link_libraries(Hozy_Server "DbgHelp.lib")
