@@ -11,8 +11,12 @@ class LogStream : public AbstractLog {
 
 public:
     LogStream(std::ostream* stream);
-    LogStream(std::ostream* stream, int level);
+    LogStream(std::ostream* stream, int type_accept);
+    LogStream(const LogStream& origin);
+
     void send(std::string message);
+
+    LogStream& operator=(const LogStream& origin);
 
 private:
     std::ostream* _stream;

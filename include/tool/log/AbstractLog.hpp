@@ -8,7 +8,7 @@ class AbstractLog {
 
 public:
     /// Construct an output stream which treat message that have an higher level  than the parameter minLevel
-    AbstractLog();
+    AbstractLog(int type_accept);
 
     virtual ~AbstractLog();
 
@@ -16,10 +16,10 @@ public:
     virtual void send(std::string message) = 0;
 
     /// return the level message which are treated
-    int getLevel();
+    int get_type_accept();
 
 protected:
-    int _level;
+    int _type_accept;
 };
 
 #endif // ABSTRACT_LOG_H

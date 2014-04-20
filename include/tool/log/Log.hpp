@@ -28,122 +28,148 @@ enum LogType {
 class Log : public Singleton<Log> {
     friend class Singleton<Log>;
 
-    public:
-        ~Log() {}
+public:
+    ~Log() {}
 
-        /**
+    /**
          * @brief send the message to all output stream added which allow the types of the stream
          * @param message
          * @param level
          */
-        static void send(std::string message, int stream_types);
+    static void send(std::string message, int type_accept);
 
-        /**
+    /**
          * @brief add on output stream
          * @param log
          */
-        static void add(AbstractLog* log);
+    static void add(AbstractLog* log);
 
-    protected:
-        virtual void initialize() {}
-        virtual void destroy();
-
-
+protected:
+    virtual void initialize() {}
+    virtual void destroy();
 
 
-    private:
 
-        Log();
 
-        /**
+private:
+
+    Log();
+
+    /**
          * @brief _logs list of output stream
          */
-        std::vector<AbstractLog*> _logs;
+    std::vector<AbstractLog*> _logs;
 
-        /**
+    /**
          * @brief The StringBuf class contains output stream data
          */
-        class StringBuf : public Buffer<char>, public std::streambuf {
+    class StringBuf : public Buffer<char>, public std::streambuf {
 
-            public:
+    public:
 
-                StringBuf(int level) : Buffer<char>(), _level(level) {
+        StringBuf(int type_accept) : Buffer<char>(), std::streambuf(), _type_accept(type_accept) {
 
-                }
+        }
 
-                /**
+        StringBuf(const StringBuf& origin) : Buffer<char>(*this),  std::streambuf(), _type_accept(0) {
+            operator=(origin);
+        }
+
+
+
+
+
+        /**
                  * flush data when buffer is destroy
                  */
-                ~StringBuf() {
+        ~StringBuf() {
 
-                }
+        }
 
-                /**
+        /**
                  * @brief overflow add caractere to the buffer and flush it when encounters a return line
                  * @param c
                  * @return
                  */
-                int overflow (int c = EOF) {
-                    add(c);
+        int overflow (int c = EOF) {
+            add(c);
 
-                    if(c == '\n') {
-                        flush();
-                    }
-                    return 0;
-                }
-
-                /**
-                 * @brief flush send data to the output stream and clear buffer
-                 */
-                void flush() {
-                    send(std::string(base(), size()), _level);
-                    clear();
-                }
-
-            private:
-                int _level;
-        };
+            if(c == '\n') {
+                flush();
+            }
+            return 0;
+        }
 
         /**
+                 * @brief flush send data to the output stream and clear buffer
+                 */
+        void flush() {
+            send(std::string(get_base(), get_size()), _type_accept);
+            clear();
+        }
+
+        StringBuf& operator=(const StringBuf& origin) {
+            _type_accept = origin._type_accept;
+            return *this;
+        }
+
+    private:
+        int _type_accept;
+    };
+
+    /**
          * @brief The OutStream class is and adaptator for the log system
          */
-        class OutStream : public std::ostream {
+    class OutStream : public std::ostream {
 
-            public:
-                OutStream(int level) : std::ostream(_buffer = new StringBuf(level)) {
+    public:
+        OutStream(int type_accept) : OutStream(new StringBuf(type_accept)) {
 
-                }
+        }
 
-                ~OutStream() {
-                    delete _buffer;
-                }
+        OutStream(const OutStream& origin) : std::basic_ios<char>(), std::basic_ostream<char>(), _buffer(nullptr) {
+            operator=(origin);
+        }
 
-                void flush() {
-                    _buffer->flush();
-                }
+        ~OutStream() {
+            delete _buffer;
+        }
 
-            private:
-                StringBuf* _buffer;
+        void flush() {
+            _buffer->flush();
+        }
 
-        };
+        OutStream& operator=(const OutStream& origin) {
+            std::copy(origin._buffer,  origin._buffer+1, _buffer);
+            return *this;
+        }
 
-        public:
-            /**
+    private:
+        OutStream(StringBuf* buffer) : std::basic_ios<char>(), std::basic_ostream<char>(buffer), _buffer(buffer) {
+
+        }
+
+        StringBuf* _buffer;
+
+    };
+
+public:
+    /**
              * @brief lout standard log output stream
              */
-            static OutStream lout;
-            /**
+    static OutStream lout;
+    /**
              * @brief lout standard warning log output stream
              */
-            static OutStream lwarning;
-            /**
+    static OutStream lwarning;
+    /**
              * @brief lerr standard error log output stream
              */
-            static OutStream lerr;
-            /**
+    static OutStream lerr;
+    /**
              * @brief lerr standard debug log output stream
              */
-            static OutStream ldebug;
+    static OutStream ldebug;
 };
 
 

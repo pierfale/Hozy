@@ -21,7 +21,6 @@ public:
     static void network_event_handler(const NetworkEvent& event);
 
 protected:
-    ModuleView() {}
     virtual void initialize() {
         std::cout << "init ModuleView" << std::endl;
     }
@@ -31,8 +30,7 @@ protected:
     }
 
 private:
-    std::vector<int> _test;
-
+    ModuleView();
 };
 
 #endif

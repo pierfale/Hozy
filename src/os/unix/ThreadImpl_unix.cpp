@@ -2,7 +2,7 @@
 
 #include "os/unix/ThreadImpl_unix.hpp"
 
-ThreadImpl_unix::ThreadImpl_unix() {
+ThreadImpl_unix::ThreadImpl_unix() : _thread() {
 
 }
 

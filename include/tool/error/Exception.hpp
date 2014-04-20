@@ -31,7 +31,7 @@ public:
 		return std::string("[Error] "+get_error_message(static_cast<ErrorCode>(_error_code))+(_os_error_code != 0 ? " | Os error : "+os_message(_os_error_code) : "")+"\n"+_file+" in "+_function+" at line "+ct::to_string(_line)).c_str();
     }
 
-	int error_code() const {
+    int get_error_code() const {
         return _error_code;
     }
 
@@ -45,7 +45,7 @@ private:
 		LocalFree(err);
 		return msg;
 #elif defined UNIX
-		return strerror(os_error_code)+" ("+ct::to_string(os_error_code)+")");
+        return std::string(strerror(os_error_code))+" ("+ct::to_string(os_error_code)+")";
 #endif
     }
 

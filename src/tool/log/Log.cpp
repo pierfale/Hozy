@@ -5,7 +5,7 @@ Log::OutStream Log::lwarning(LOG_WARNING);
 Log::OutStream Log::lerr(LOG_ERROR);
 Log::OutStream Log::ldebug(LOG_DEBUG);
 
-Log::Log() {
+Log::Log() : _logs() {
 
 }
 
@@ -20,9 +20,9 @@ void Log::destroy() {
     }
 }
 
-void Log::send(std::string message, int level) {
+void Log::send(std::string message, int type_accept) {
     for(unsigned int i=0; i<instance()->_logs.size(); i++) {
-        if(instance()->_logs[i]->getLevel() & level)
+        if(instance()->_logs[i]->get_type_accept() & type_accept)
             instance()->_logs[i]->send(message);
     }
 }

@@ -1,9 +1,6 @@
 #ifndef NET_ADDRESS_HPP
 #define NET_ADDRESS_HPP
 
-#define IPV4_SIZE 4
-#define IPV6_SIZE 16
-
 #include <string>
 #include <cstring>
 
@@ -25,14 +22,31 @@ class NetAddress {
 	friend class SocketTcp;
 
 public:
+    enum AddressType {
+        ADDRESS_TYPE_UNDEFINED,
+        IPV4,
+        IPV6
+    };
+
+
 	NetAddress(const std::string& name);
+    NetAddress(const NetAddress& origin);
+
+    ~NetAddress();
 
 	static NetAddress getLocalAdress();
+    struct sockaddr* address() const;
+    AddressType type() const;
+
+    std::string to_string() const;
+
+    NetAddress& operator=(const NetAddress& origin);
+
 
 private:
-	void* generateAddressStruct(unsigned int port) const;
-	std::size_t _size;
-	uint8_t _address[IPV6_SIZE];
+    struct sockaddr* _address;
+    std::size_t _size;
+    AddressType _type;
 };
 
 #endif

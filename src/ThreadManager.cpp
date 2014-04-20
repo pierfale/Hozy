@@ -2,8 +2,18 @@
 #include "tool/Thread.hpp"
 #include "tool/log/Log.hpp"
 
+Mutex ThreadManager::_mutex_thread_list;
+
+ThreadManager::ThreadManager() : _thread_list() {
+
+}
+
 void ThreadManager::initialize() {
     Log::ldebug << "[ThreadManager] Main thread " << Thread::get_current_thread_id() << std::endl;
+	_alive = true;
+	_manage_thread = new Thread();
+	_manage_thread->create(MemberFunction<ThreadManager, void>(instance(), &ThreadManager::manage));
+
 }
 
 void ThreadManager::destroy() {
@@ -12,5 +22,33 @@ void ThreadManager::destroy() {
 
 void ThreadManager::add(Thread* thread) {
     Log::ldebug << "[ThreadManager] Add thread " << thread->id() << std::endl;
+	_mutex_thread_list.lock();
     instance()->_thread_list.push_back(thread);
+	_mutex_thread_list.unlock();
+}
+
+void ThreadManager::wait_all() {
+	instance()->_alive = false;
+	instance()->_manage_thread->join();
+	delete instance()->_manage_thread;
+}
+
+void ThreadManager::manage() {
+
+	while(instance()->_thread_list.size() > 1 || instance()->_alive) {
+
+		_mutex_thread_list.lock();
+
+		for(unsigned int i=0; i<instance()->_thread_list.size(); i++) {
+			if(!instance()->_thread_list.at(i)->is_alive()) {
+				Log::ldebug << "[ThreadManager] Thread " << instance()->_thread_list.at(i)->id() << " terminate" << std::endl;
+				delete instance()->_thread_list.at(i);
+				instance()->_thread_list.erase(instance()->_thread_list.begin()+i);
+				i--;
+			}
+		}
+
+		_mutex_thread_list.unlock();
+		Thread::sleep(10);
+	}
 }
