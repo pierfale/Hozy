@@ -24,14 +24,20 @@ void ModuleNetworkServer::destroy() {
 void ModuleNetworkServer::run() {
 	try {
 
-		_socket.listen(2342);
+		_socket.listen(50885);
 
 		SocketTcp client;
 
-		Log::ldebug << "Listen on port 2342" << std::endl;
-		/*while(_socket.accept(client)) {
+		Log::lout << "Listen on port 2342" << std::endl;
+		while(_socket.accept(client)) {
+			Log::ldebug << "Client connected !" << std::endl;
 
-		}*/
+			Packet packet;
+			client.receive(packet);
+			std::string msg;
+			packet >> msg;
+			Log::ldebug << "client say " << msg << std::endl;
+		}
 	}
 	catch(Exception const& e) {
 		Log::lerr << std::string(e.what()) << std::endl;

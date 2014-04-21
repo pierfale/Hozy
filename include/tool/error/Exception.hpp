@@ -13,7 +13,7 @@
 #include "tool/error/ErrorCode.hpp"
 #include "tool/error/ErrorMessage.hpp"
 
-class Exception : std::exception {
+class Exception : public std::exception {
 
 public:
     Exception(const std::string& file, const std::string& function, int line, int error_code) throw() : _file(file), _function(function), _line(line), _error_code(error_code), _os_error_code(0)  {
@@ -25,9 +25,6 @@ public:
     }
 
     virtual const char* what() const throw() {
-		/*std::cout << get_error_message(static_cast<ErrorCode>(_error_code)) <<  std::endl;
-		std::cout << os_message(_os_error_code) <<  std::endl;*/
-
 		return std::string("[Error] "+get_error_message(static_cast<ErrorCode>(_error_code))+(_os_error_code != 0 ? " | Os error : "+os_message(_os_error_code) : "")+"\n"+_file+" in "+_function+" at line "+ct::to_string(_line)).c_str();
     }
 

@@ -21,7 +21,7 @@ void SocketTcp::connect(const NetAddress& address, unsigned int port) {
 
         struct sockaddr_in addr_in;
         memcpy(&addr_in, address.address(), sizeof(struct sockaddr_in));
-        addr_in.sin_port = port;
+		addr_in.sin_port = htons(port);
 
 
 		if(::connect(_socket, (const sockaddr*)&addr_in, sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
@@ -50,37 +50,39 @@ void SocketTcp::receive(Packet& packet) {
     if(_socket == 0)
         throw_error(E_SOCKET_CLOSED);
 
-    uint32_t header;
-
+	// Receive header
+	struct Packet::Header header;
+	unsigned int curr = 0;
     int err;
 
-	if((err = recv(_socket, (char*)&header, sizeof(uint32_t), 0)) == SOCKET_ERROR) {
-        throw_error_os(E_SOCKET_RECEIVE_FAILED, ERR_NO);
-    }
+	do {
+		if((err = recv(_socket, (char*)&header, sizeof(struct Packet::Header)-curr, 0)) == SOCKET_ERROR) {
+			throw_error_os(E_SOCKET_RECEIVE_FAILED, ERR_NO);
+		}
 
-    if(err == 0) {
-        close();
-        throw_error(E_SOCKET_CLOSED);
-    }
+		if(err == 0) {
+			close();
+			throw_error(E_SOCKET_CLOSED);
+		}
 
-    if(err < (int)sizeof(uint32_t)) {
+		curr += err;
+
+	} while(curr < sizeof(struct Packet::Header));
+
+	if(header.check_code != PACKET_CHECK) {
         close();
         throw_error(E_SOCKET_DATA);
     }
 
-    if(header >> 16 != PACKET_CHECK) {
-        close();
-        throw_error(E_SOCKET_DATA);
-    }
+	//Copy header
+	std::memcpy(packet._buffer.get_base(), &header, sizeof(struct Packet::Header));
 
-    uint16_t size, curr;
-    size = header & 0xFFFF;
+	//Receiver contents
     curr = 0;
-
-    packet._buffer.reserve(size);
+	packet._buffer.reserve(header.size);
 
     do {
-		if((err = recv(_socket, (char*)packet._buffer.get_ptr(), size-curr, 0)) == SOCKET_ERROR) {
+		if((err = recv(_socket, (char*)packet._buffer.get_ptr()+curr, header.size-curr, 0)) == SOCKET_ERROR) {
             throw_error_os(E_SOCKET_RECEIVE_FAILED, ERR_NO);
         }
 
@@ -92,7 +94,9 @@ void SocketTcp::receive(Packet& packet) {
         packet._buffer.bump(err);
         curr += err;
 
-    } while(curr < size);
+	} while(curr < header.size);
+
+	std::cout << "Receive : " << std::endl << packet.to_string() << std::endl;
 
 }
 
@@ -115,6 +119,8 @@ void SocketTcp::send(Packet& packet) {
 
 		send_size += err;
 	}
+
+	std::cout << "Send : " << std::endl << packet.to_string() << std::endl;
 }
 
 void SocketTcp::close() {

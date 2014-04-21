@@ -1,7 +1,7 @@
 #include "ModuleManager.hpp"
 #include "EventManager.hpp"
 #include "view/ModuleView.hpp"
-#include "network/ModuleNetwork.hpp"
+#include "network/client/ModuleNetworkClient.hpp"
 #include "tool/log/Log.hpp"
 #include "tool/error/ErrorManager.hpp"
 #include "tool/Thread.hpp"
@@ -29,7 +29,7 @@ int main() {
 
         //Register all module to SingletonManager
         ModuleView::register_singleton("ModuleView", 2);
-        ModuleNetwork::register_singleton("ModuleNetwork", 2);
+		ModuleNetworkClient::register_singleton("ModuleNetwork", 2);
 
 
         //Initialize all register singleton instance
@@ -37,18 +37,16 @@ int main() {
 
         //Register module to ModuleManager
         ModuleManager::register_module("view", ModuleView::instance());
-        ModuleManager::register_module("network", ModuleNetwork::instance());
+		ModuleManager::register_module("network", ModuleNetworkClient::instance());
 
         //Set events handler
-        EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
+		//EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
 
-        Thread* thread_view = ModuleManager::start_thread("view");
-
-        SocketTcp sock;
-		sock.connect(NetAddress("127.0.0.1"), 2342);
+		ModuleManager::start_thread("network");
 
 
-        thread_view->join();
+		//wait all thread alive
+		ThreadManager::wait_all();
 
         //Destroy all registered singleton contains in SingletonManager
         SingletonManager::destroy_all();

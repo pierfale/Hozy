@@ -47,8 +47,9 @@ public:
      */
 
     void add(T* buffer, unsigned int size) {
-        check_allocated_space(_buffer+_cursor, size);
-        memcpy((char*)(_buffer+_cursor), buffer, size);
+		std::cout << "test : " << *(uint32_t*)buffer << std::endl;
+		check_allocated_space(_buffer+_cursor, size);
+		std::memcpy((char*)(_buffer+_cursor), buffer, size);
         _cursor += size;
     }
 

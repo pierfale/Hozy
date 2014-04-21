@@ -41,8 +41,8 @@ int main() {
 
 		ModuleManager::start_thread("network");
 
+		//wait all thread alive
 		ThreadManager::wait_all();
-
 
 		//Destroy all registered singleton contains in SingletonManager
 		SingletonManager::destroy_all();
