@@ -1,11 +1,10 @@
 #ifndef SOCKET_TCP_HPP
 #define SOCKET_TCP_HPP
 
-#define PACKET_CHECK 0x9C4A
-
 #ifdef UNIX
 #define SOCKET int
 #define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
 #define ERR_NO errno
 #define closesocket(sck) close(sck)
 #elif defined WIN32
@@ -14,12 +13,14 @@
 #define ERR_NO WSAGetLastError()
 #endif
 
-
+#include "tool/error/ErrorManager.hpp"
 #include "network/NetAddress.hpp"
 #include "network/Packet.hpp"
-#include "tool/error/ErrorManager.hpp"
+
 
 class SocketTcp {
+
+	friend class ServerTcp;
 
 public:
     SocketTcp();

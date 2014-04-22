@@ -14,6 +14,7 @@ LogStream::LogStream(const LogStream& origin) : AbstractLog(0), _stream(0) {
 
 void LogStream::send(std::string message) {
     *_stream << message;
+	_stream->flush();
 }
 
 LogStream& LogStream::operator=(const LogStream& origin) {

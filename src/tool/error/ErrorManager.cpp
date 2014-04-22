@@ -9,9 +9,10 @@
 #define MAX_FRAME 255
 
 void* get_rbp() {
-    void* rbp = nullptr;
+   /* void* rbp = nullptr;
     asm("movq %rbp, -8(%rbp)");
-    return rbp;
+    return rbp;*/
+    return NULL;
 }
 
 void print_stack_call() {

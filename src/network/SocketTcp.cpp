@@ -1,6 +1,6 @@
 #include "network/SocketTcp.hpp"
 
-SocketTcp::SocketTcp() : _socket(-1) {
+SocketTcp::SocketTcp() : _socket(0) {
 
 }
 
@@ -13,25 +13,24 @@ void SocketTcp::connect(const NetAddress& address, unsigned int port) {
 
     if(address.type() == NetAddress::IPV4) {
 
-        _socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-        if(_socket == INVALID_SOCKET) {
+
+		if((_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
             throw_error_os(E_SOCKET_CREATE_FAILED, ERR_NO);
         }
 
         struct sockaddr_in addr_in;
         memcpy(&addr_in, address.address(), sizeof(struct sockaddr_in));
-        addr_in.sin_port = port;
+		addr_in.sin_port = htons(port);
 
 
-        if(::connect(_socket, (const sockaddr*)&addr_in, sizeof(struct sockaddr_in)) == -1) {
+		if(::connect(_socket, (const sockaddr*)&addr_in, sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
             throw_error_os(E_SOCKET_CONNECT_FAILED, ERR_NO);
         }
     }
     else if(address.type() == NetAddress::IPV6) {
-        _socket = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
 
-        if(_socket == INVALID_SOCKET) {
+		if((_socket = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
             throw_error_os(E_SOCKET_CREATE_FAILED, ERR_NO);
         }
 
@@ -40,7 +39,7 @@ void SocketTcp::connect(const NetAddress& address, unsigned int port) {
         addr_in.sin6_port = port;
 
 
-        if(::connect(_socket, (const sockaddr*)&addr_in, sizeof(struct sockaddr_in6)) == -1) {
+		if(::connect(_socket, (const sockaddr*)&addr_in, sizeof(struct sockaddr_in6)) == SOCKET_ERROR) {
             throw_error_os(E_SOCKET_CONNECT_FAILED, ERR_NO);
         }
     }
@@ -48,37 +47,42 @@ void SocketTcp::connect(const NetAddress& address, unsigned int port) {
 }
 
 void SocketTcp::receive(Packet& packet) {
-    uint32_t header;
+    if(_socket == 0)
+        throw_error(E_SOCKET_CLOSED);
 
+	// Receive header
+	struct Packet::Header header;
+	unsigned int curr = 0;
     int err;
 
-    if((err = recv(_socket, &header, sizeof(uint32_t), 0)) == -1) {
-        throw_error_os(E_SOCKET_RECEIVE_FAILED, ERR_NO);
-    }
+	do {
+		if((err = recv(_socket, (char*)&header, sizeof(struct Packet::Header)-curr, 0)) == SOCKET_ERROR) {
+			throw_error_os(E_SOCKET_RECEIVE_FAILED, ERR_NO);
+		}
 
-    if(err == 0) {
-        close();
-        throw_error(E_SOCKET_CLOSED);
-    }
+		if(err == 0) {
+			close();
+			throw_error(E_SOCKET_CLOSED);
+		}
 
-    if(err < sizeof(uint32_t)) {
+		curr += err;
+
+	} while(curr < sizeof(struct Packet::Header));
+
+	if(header.check_code != PACKET_CHECK) {
         close();
         throw_error(E_SOCKET_DATA);
     }
 
-    if(header >> 16 != PACKET_CHECK) {
-        close();
-        throw_error(E_SOCKET_DATA);
-    }
+	//Copy header
+	std::memcpy(packet._buffer.get_base(), &header, sizeof(struct Packet::Header));
 
-    uint16_t size, curr;
-    size = header & 0xFFFF;
+	//Receiver contents
     curr = 0;
-
-    packet._buffer.reserve(size);
+	packet._buffer.reserve(header.size);
 
     do {
-        if((err = recv(_socket, packet._buffer.get_ptr(), size-curr, 0)) == -1) {
+		if((err = recv(_socket, (char*)packet._buffer.get_ptr()+curr, header.size-curr, 0)) == SOCKET_ERROR) {
             throw_error_os(E_SOCKET_RECEIVE_FAILED, ERR_NO);
         }
 
@@ -90,17 +94,38 @@ void SocketTcp::receive(Packet& packet) {
         packet._buffer.bump(err);
         curr += err;
 
-    } while(curr < size);
+	} while(curr < header.size);
+
+	std::cout << "Receive : " << std::endl << packet.to_string() << std::endl;
 
 }
 
 void SocketTcp::send(Packet& packet) {
+    if(_socket == 0)
+        throw_error(E_SOCKET_CLOSED);
 
+	std::size_t send_size = 0;
+
+	while(send_size < packet._buffer.get_size()) {
+		int err;
+		if((err = ::send(_socket, (char*)packet._buffer.get_base()+send_size, packet._buffer.get_size()-send_size, 0)) == SOCKET_ERROR) {
+			throw_error_os(E_SOCKET_SEND_FAILED, ERR_NO);
+		}
+
+		if(err == 0) {
+			close();
+			throw_error(E_SOCKET_CLOSED);
+		}
+
+		send_size += err;
+	}
+
+	std::cout << "Send : " << std::endl << packet.to_string() << std::endl;
 }
 
 void SocketTcp::close() {
-    if(_socket == -1) {
+    if(_socket == 0) {
         closesocket(_socket);
-        _socket = -1;
+        _socket = 0;
     }
 }

@@ -17,9 +17,7 @@
 class Thread {
 
 public:
-    Thread() {
-
-    }
+	Thread();
 
     template<class Tclass, class Treturn, class... Targs>
     void create(const MemberFunction<Tclass, Treturn, Targs...>& function, Targs... arguments) {
@@ -33,20 +31,15 @@ public:
         ThreadManager::add(this);
     }
 
-    void join() {
-        impl.join();
-    }
+	void join();
+	int id();
+	bool is_alive();
 
-    int id() {
-        return impl.id();
-    }
-
-    static int get_current_thread_id() {
-           return impl.get_current_thread_id();
-    }
+	static int get_current_thread_id();
+	static void sleep(unsigned int ms);
 
 private:
-    static THREAD_IMPLEMENTATION impl;
+	THREAD_IMPLEMENTATION impl;
 
 
 };

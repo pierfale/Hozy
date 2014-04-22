@@ -12,12 +12,7 @@ NetAddress::NetAddress(const std::string& name) : _address(nullptr), _size(0), _
 		throw_error(E_ADDRESS_NOT_FOUND);
 
 	if(addr_info->ai_family == AF_INET) {
-/*
-		while(addr_info != NULL) {
-			std::cout << ">>" << inet_ntoa(((struct sockaddr_in *)addr_info->ai_addr)->sin_addr) << std::endl;
-			addr_info = addr_info->ai_next;
-		}
-*/
+
         _address = (sockaddr*)malloc(addr_info->ai_addrlen);
         std::memcpy(_address, addr_info->ai_addr, addr_info->ai_addrlen);
         _size = addr_info->ai_addrlen;

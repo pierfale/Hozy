@@ -20,6 +20,18 @@ public:
         return s.str();
     }
 
+	static std::string to_hex_string(int i) {
+		std::stringstream s;
+		s << std::hex << i;
+		return s.str();
+	}
+
+	static std::string to_hex_string(unsigned int i) {
+		std::stringstream s;
+		s << std::hex << i;
+		return s.str();
+	}
+
 };
 
 #endif
