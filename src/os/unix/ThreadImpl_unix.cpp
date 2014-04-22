@@ -16,8 +16,18 @@ int ThreadImpl_unix::id() {
     return (unsigned int)_thread;
 }
 
+bool ThreadImpl_unix::is_alive() {
+    return pthread_kill(_thread, 0) != ESRCH;
+}
+
 int ThreadImpl_unix::get_current_thread_id() {
     return (int)pthread_self();
+}
+
+void ThreadImpl_unix::sleep(unsigned int ms) {
+    if(usleep(ms) == -1) {
+        throw_error(E_SLEEP_FAILED);
+    }
 }
 
 #endif

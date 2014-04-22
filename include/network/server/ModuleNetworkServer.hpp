@@ -10,6 +10,8 @@
 #include "Module.hpp"
 #include "tool/error/ErrorManager.hpp"
 #include "tool/log/Log.hpp"
+#include "network/server/UnauthenticatedClient.hpp"
+#include "data/server/Client.hpp"
 
 
 class ModuleNetworkServer : public Module, public Singleton<ModuleNetworkServer> {

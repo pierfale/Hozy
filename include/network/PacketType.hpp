@@ -3,7 +3,8 @@
 
 enum PacketType {
 
-	P_UNDEFINED
+    P_UNDEFINED,
+    P_AUTHENTICATION,
 
 };
 

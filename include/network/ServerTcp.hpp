@@ -7,6 +7,11 @@
 class ServerTcp {
 
 public:
+    enum Status {
+        DISCONNECTED,
+        CONNECTED
+    };
+
 	ServerTcp();
 	~ServerTcp();
 
@@ -16,6 +21,7 @@ public:
 
 private:
 	SOCKET _socket;
+    Status _status;
 };
 
 #endif

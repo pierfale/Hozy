@@ -1,6 +1,6 @@
 #include "network/SocketTcp.hpp"
 
-SocketTcp::SocketTcp() : _socket(0) {
+SocketTcp::SocketTcp() : _socket(), _status(DISCONNECTED) {
 
 }
 
@@ -47,7 +47,7 @@ void SocketTcp::connect(const NetAddress& address, unsigned int port) {
 }
 
 void SocketTcp::receive(Packet& packet) {
-    if(_socket == 0)
+    if(_status == CONNECTED)
         throw_error(E_SOCKET_CLOSED);
 
 	// Receive header
@@ -101,7 +101,7 @@ void SocketTcp::receive(Packet& packet) {
 }
 
 void SocketTcp::send(Packet& packet) {
-    if(_socket == 0)
+    if(_status == CONNECTED)
         throw_error(E_SOCKET_CLOSED);
 
 	std::size_t send_size = 0;
@@ -124,8 +124,8 @@ void SocketTcp::send(Packet& packet) {
 }
 
 void SocketTcp::close() {
-    if(_socket == 0) {
+    if(_status == CONNECTED) {
         closesocket(_socket);
-        _socket = 0;
+        _status = DISCONNECTED;
     }
 }

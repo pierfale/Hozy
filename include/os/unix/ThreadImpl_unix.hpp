@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string.h>
 #include <pthread.h>
+#include <signal.h>
+#include <unistd.h>
 #include "tool/Function.hpp"
 #include "tool/Convert.hpp"
 #include "tool/error/ErrorManager.hpp"
@@ -28,7 +30,9 @@ public:
 
     void join();
     int id();
+    bool is_alive();
     static int get_current_thread_id();
+    static void sleep(unsigned int ms);
 
 private:
     pthread_t _thread;

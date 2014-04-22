@@ -26,6 +26,7 @@ public:
 		if(_thread == NULL)
 			throw_error_os(E_THREAD_CREATE_FAILED, GetLastError());
 	}
+    ~ThreadImpl_win32();
 
 	void join();
 	int id();

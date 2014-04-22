@@ -1,19 +1,19 @@
 #include "tool/Thread.hpp"
 
-Thread::Thread() {
+Thread::Thread() : _impl() {
 
 }
 
 void Thread::join() {
-	impl.join();
+    _impl.join();
 }
 
 int Thread::id() {
-	return impl.id();
+    return _impl.id();
 }
 
 bool Thread::is_alive() {
-	return impl.is_alive();
+    return _impl.is_alive();
 }
 
 int Thread::get_current_thread_id() {

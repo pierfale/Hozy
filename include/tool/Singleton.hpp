@@ -5,7 +5,7 @@
 #include <map>
 #include <typeinfo>
 #include "SingletonManager.hpp"
-//#include "tool/log/Log.hpp"
+#include "tool/error/ErrorManager.hpp"
 
 template<class T>
 class Singleton;
@@ -49,7 +49,7 @@ public:
      */
     static T* instance() {
         if(_instance == nullptr) {
-            std::cerr << "Singleton " << typeid(T).name() << " Unregistered" << std::endl;
+            throw_error_args(E_SINGLETON_UNREGISTERED, typeid(T).name());
         }
         return _instance;
     }

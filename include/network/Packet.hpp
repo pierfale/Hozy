@@ -29,6 +29,8 @@ public:
 		uint32_t size;
 	} __attribute__((__packed__));
 
+    PacketType get_type();
+
 	std::string to_string();
 
 private:

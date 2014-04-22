@@ -8,6 +8,12 @@ MutexImpl_win32::MutexImpl_win32() {
 	}
 }
 
+MutexImpl_win32::~MutexImpl_win32() {
+    if(CloseHandle(_mutex) == 0) {
+        throw_error_os(E_MUTEX_DESTROY_FAILED , GetLastError());
+    }
+}
+
 void MutexImpl_win32::lock() {
 	if(WaitForSingleObject(_mutex, INFINITE) == WAIT_FAILED) {
 		throw_error_os(E_MUTEX_LOCK_FAILED , GetLastError());

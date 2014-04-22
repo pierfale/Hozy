@@ -9,7 +9,7 @@ Packet::Packet(PacketType type) : _buffer(), _out_cursor(0) {
 	struct Header header;
 
 	header.check_code = PACKET_CHECK ;
-	header.type = 0;
+    header.type = type;
 	header.size = 0;
 
 	_buffer.add((uint8_t*)&header, sizeof(struct Header));
@@ -51,10 +51,11 @@ Packet& Packet::operator>>(uint32_t& data) {
 Packet& Packet::operator>>(std::string& data) {
 	uint16_t size;
 	get(&size, sizeof(uint16_t));
-	char str[size+1];
-	get(&str, size);
+    char* str = new char[size+1];
+    get(str, size);
 	str[size] = '\0';
 	data.assign(str);
+    delete[] str;
 	return *this;
 }
 
@@ -70,8 +71,12 @@ void Packet::add_size(std::size_t size) {
 	((struct Header*)_buffer.get_base())->size += size;
 }
 
+PacketType Packet::get_type() {
+    return static_cast<PacketType>(((struct Header*)_buffer.get_base())->type);
+}
+
 std::string Packet::to_string() {
-	struct Header* header = ((struct Header*)_buffer.get_base());
+    struct Header* header = (struct Header*)_buffer.get_base();
 	std::string str = "check_code : "+ct::to_hex_string(header->check_code)+"\ntype : "+ct::to_hex_string(header->type)+"\nsize : "+ct::to_string(header->size);
 	for(unsigned int i = sizeof(struct Header); i<_buffer.get_size(); i++) {
 		if((i-sizeof(struct Header))%16 == 0)

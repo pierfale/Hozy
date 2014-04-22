@@ -2,11 +2,12 @@
 #define SOCKET_TCP_HPP
 
 #ifdef UNIX
+#include <unistd.h>
 #define SOCKET int
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1
 #define ERR_NO errno
-#define closesocket(sck) close(sck)
+#define closesocket(sck) ::close(sck)
 #elif defined WIN32
 #include <winsock2.h>
 #include <windows.h>
@@ -21,8 +22,14 @@
 class SocketTcp {
 
 	friend class ServerTcp;
+    friend class ClientSelector;
 
 public:
+    enum Status {
+        DISCONNECTED,
+        CONNECTED
+    };
+
     SocketTcp();
     ~SocketTcp();
 
@@ -33,6 +40,7 @@ public:
 
 private:
 	SOCKET _socket;
+    Status _status;
 };
 
 #endif

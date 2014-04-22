@@ -21,13 +21,13 @@ public:
 
     template<class Tclass, class Treturn, class... Targs>
     void create(const MemberFunction<Tclass, Treturn, Targs...>& function, Targs... arguments) {
-        impl.create(function, arguments...);
+        _impl.create(function, arguments...);
         ThreadManager::add(this);
     }
 
     template<class Tclass, class Treturn, class... Targs>
     void create(const Function<Treturn, Targs...>& function) {
-        impl.create(function);
+        _impl.create(function);
         ThreadManager::add(this);
     }
 
@@ -39,7 +39,7 @@ public:
 	static void sleep(unsigned int ms);
 
 private:
-	THREAD_IMPLEMENTATION impl;
+    THREAD_IMPLEMENTATION _impl;
 
 
 };

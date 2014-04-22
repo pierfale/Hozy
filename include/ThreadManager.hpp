@@ -19,6 +19,9 @@ protected:
 
 private:
     ThreadManager();
+    ThreadManager(const ThreadManager& origin);
+    ThreadManager& operator=(const ThreadManager& origin);
+
 	void manage();
 
     std::vector<Thread*> _thread_list;

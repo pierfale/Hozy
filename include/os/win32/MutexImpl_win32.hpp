@@ -9,12 +9,13 @@
 class MutexImpl_win32 {
 
 public:
-	MutexImpl_win32();
+    MutexImpl_win32();
+    ~MutexImpl_win32();
 
-	void lock();
-	void unlock();
+    void lock();
+    void unlock();
 private:
-	HANDLE _mutex;
+    HANDLE _mutex;
 
 };
 
