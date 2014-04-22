@@ -1,4 +1,7 @@
 #include "network/server/ModuleNetworkServer.hpp"
+#include "network/server/UnauthenticatedClient.hpp"
+#include "network/server/MenuClient.hpp"
+#include "data/server/Client.hpp"
 
 ModuleNetworkServer::ModuleNetworkServer() : _socket() {
 
@@ -12,8 +15,8 @@ void ModuleNetworkServer::initialize() {
 		throw_error_os(E_INIT_WINSOCK_FAILED, err);
 	}
 #endif
-        std::cout << "REGISTER" << std::endl;
     UnauthenticatedClient::register_singleton("UnauthenticatedClient", 100);
+    MenuClient::register_singleton("MenuClient", 100);
 }
 
 void ModuleNetworkServer::destroy() {
@@ -31,15 +34,7 @@ void ModuleNetworkServer::run() {
 
 		Log::lout << "Listen on port 2342" << std::endl;
         while(_socket.accept(*client)) {
-			Log::ldebug << "Client connected !" << std::endl;
-
             UnauthenticatedClient::add(new Client(client));
-
-			Packet packet;
-            client->receive(packet);
-			std::string msg;
-			packet >> msg;
-			Log::ldebug << "client say " << msg << std::endl;
 		}
 	}
 	catch(Exception const& e) {

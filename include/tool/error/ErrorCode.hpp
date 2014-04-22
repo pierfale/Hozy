@@ -30,6 +30,8 @@ enum ErrorCode {
     E_SOCKET_CLOSED,
 	E_SOCKET_DATA,
 
+    E_PACKET_DATA,
+
     E_SELECTOR_NEXT_FAILED,
 
     E_PACKET_EMPTY,

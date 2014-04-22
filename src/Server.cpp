@@ -1,6 +1,8 @@
 #include "Server.hpp"
 
-Server::Server() : _running(false) {
+bool Server::_running = false;
+
+Server::Server() {
 
 }
 

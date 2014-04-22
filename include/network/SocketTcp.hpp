@@ -38,7 +38,12 @@ public:
 	void send(Packet& packet);
     void close();
 
+    const NetAddress& get_address();
+
 private:
+    SocketTcp(const SocketTcp& origin);
+    SocketTcp& operator=(const SocketTcp& origin);
+
 	SOCKET _socket;
     Status _status;
 };

@@ -14,13 +14,13 @@
 class Server {
 
 public:
-    Server();
-    int start();
-    bool is_running();
+    static int start();
+    static bool is_running();
 
 private:
+    Server();
     static void exit_handler(int sig);
-    bool _running;
+    static bool _running;
 
 };
 

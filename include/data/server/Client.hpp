@@ -9,7 +9,10 @@ public:
     Client(SocketTcp* socket);
     ~Client();
 
+    bool authenticate(std::string pseudo, std::string password);
+
     SocketTcp* get_tcp_socket();
+    std::string get_pseudo();
 
 private:
     Client(const Client& origin);

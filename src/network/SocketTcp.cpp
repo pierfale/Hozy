@@ -1,7 +1,15 @@
 #include "network/SocketTcp.hpp"
 
-SocketTcp::SocketTcp() : _socket(), _status(DISCONNECTED) {
+SocketTcp::SocketTcp() : _socket(), _status(DISCONNECTED){
 
+}
+
+SocketTcp::SocketTcp(const SocketTcp& origin __attribute__((unused))) : SocketTcp() {
+
+}
+
+SocketTcp& SocketTcp::operator=(const SocketTcp& origin __attribute__((unused))) {
+    return *this;
 }
 
 SocketTcp::~SocketTcp() {
@@ -96,8 +104,6 @@ void SocketTcp::receive(Packet& packet) {
 
 	} while(curr < header.size);
 
-	std::cout << "Receive : " << std::endl << packet.to_string() << std::endl;
-
 }
 
 void SocketTcp::send(Packet& packet) {
@@ -119,8 +125,6 @@ void SocketTcp::send(Packet& packet) {
 
 		send_size += err;
 	}
-
-	std::cout << "Send : " << std::endl << packet.to_string() << std::endl;
 }
 
 void SocketTcp::close() {
@@ -128,4 +132,28 @@ void SocketTcp::close() {
         closesocket(_socket);
         _status = DISCONNECTED;
     }
+}
+
+std::string SocketTcp::to_string() {
+    struct sockaddr_storage addr;
+    int size = sizeof(struct sockaddr_storage);
+    char addr_str[INET6_ADDRSTRLEN];
+
+    if(getpeername(_socket, &addr, &size) == SOCKET_ERROR) {
+        throw_error_os(E_ADDRESS_NOT_FOUND, ERR_NO);
+    }
+
+    if(addr.ss_family == AF_INET) {
+        struct sockaddr_in *s = (struct sockaddr_in *)&addr;
+        port = ntohs(s->sin_port);
+        inet_ntop(AF_INET, &s->sin_addr, addr_str, INET6_ADDRSTRLEN);
+
+        return
+    } else if(addr.ss_family == AF_INET6) {
+        struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
+        port = ntohs(s->sin6_port);
+        inet_ntop(AF_INET6, &s->sin6_addr, ipstr, INET6_ADDRSTRLEN);
+    }
+
+    return *_address;
 }

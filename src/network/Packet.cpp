@@ -53,6 +53,12 @@ Packet& Packet::operator>>(std::string& data) {
 	get(&size, sizeof(uint16_t));
     char* str = new char[size+1];
     get(str, size);
+    for(unsigned int i=0; i<size; i++) {
+        if(str[i] == '\0') {
+            throw_error(E_PACKET_DATA);
+        }
+    }
+
 	str[size] = '\0';
 	data.assign(str);
     delete[] str;
