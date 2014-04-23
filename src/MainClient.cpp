@@ -1,7 +1,7 @@
+#include "network/client/ModuleNetworkClient.hpp"
 #include "ModuleManager.hpp"
 #include "EventManager.hpp"
 #include "view/ModuleView.hpp"
-#include "network/client/ModuleNetworkClient.hpp"
 #include "tool/log/Log.hpp"
 #include "tool/error/ErrorManager.hpp"
 #include "tool/Thread.hpp"

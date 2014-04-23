@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string.h>
 #include <pthread.h>
+#include <signal.h>
+#include <unistd.h>
 #include "tool/Function.hpp"
 #include "tool/Convert.hpp"
 #include "tool/error/ErrorManager.hpp"
@@ -28,15 +30,26 @@ public:
 
     void join();
     int id();
+    bool is_alive();
     static int get_current_thread_id();
+    static void sleep(unsigned int ms);
 
 private:
     pthread_t _thread;
 
     template<class Tclass, class Treturn, class... Targs>
     static void* proxy_member(void* arg) {
-        MemberFunction<Tclass, Treturn, Targs...>* handler = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
-        MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
+		MemberFunction<Tclass, Treturn, Targs...>* handler = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
+
+		try {
+			MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
+		}
+		catch(Exception const& e) {
+			Log::lerr << std::string(e.what()) << std::endl;
+			delete handler;
+			return (void*)e.get_error_code();
+		}
+
         delete handler;
         return nullptr;
     }

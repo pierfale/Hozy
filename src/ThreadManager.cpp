@@ -4,8 +4,16 @@
 
 Mutex ThreadManager::_mutex_thread_list;
 
-ThreadManager::ThreadManager() : _thread_list() {
+ThreadManager::ThreadManager() : _thread_list(), _manage_thread(nullptr), _alive(true) {
 
+}
+
+ThreadManager::ThreadManager(const ThreadManager& origin __attribute__((unused))) : ThreadManager() {
+
+}
+
+ThreadManager& ThreadManager::operator=(const ThreadManager& origin __attribute__((unused))) {
+    return *this;
 }
 
 void ThreadManager::initialize() {

@@ -6,7 +6,7 @@
  */
 class Module {
 
-    public:
+	public:
 
         /**
          * @brief run method call when module runtime start
@@ -15,6 +15,7 @@ class Module {
 
     protected:
         Module();
+		virtual ~Module();
 };
 
 #endif // MODULE_H

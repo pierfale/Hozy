@@ -10,6 +10,7 @@
 #include "tool/log/Log.hpp"
 #include "tool/Convert.hpp"
 #include "tool/Function.hpp"
+#include "tool/Debug.hpp"
 
 class ThreadImpl_win32 {
 
@@ -26,6 +27,7 @@ public:
 		if(_thread == NULL)
 			throw_error_os(E_THREAD_CREATE_FAILED, GetLastError());
 	}
+    ~ThreadImpl_win32();
 
 	void join();
 	int id();
@@ -37,10 +39,22 @@ private:
 	template<class Tclass, class Treturn, class... Targs>
 	static long unsigned int proxy_member(void* arg) {
 		MemberFunction<Tclass, Treturn, Targs...>* handler = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
-		MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
+
+		try {
+			MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
+		}
+		catch(Exception const& e) {
+			Log::lerr << std::string(e.what()) << std::endl;
+			Debug::generate_core_dump("core_dump");
+			delete handler;
+			return e.get_error_code();
+		}
 		delete handler;
 		return 0;
 	}
+
+	ThreadImpl_win32(const ThreadImpl_win32& origin);
+	ThreadImpl_win32& operator=(const ThreadImpl_win32& origin);
 
 
 	DWORD _id;

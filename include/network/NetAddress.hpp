@@ -39,6 +39,8 @@ public:
     AddressType type() const;
 
     std::string to_string() const;
+	static std::string to_string(sockaddr_in6* addr);
+	static std::string to_string(sockaddr_in* addr);
 
     NetAddress& operator=(const NetAddress& origin);
 

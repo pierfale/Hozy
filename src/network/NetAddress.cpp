@@ -52,10 +52,22 @@ NetAddress::AddressType NetAddress::type() const {
 
 std::string NetAddress::to_string() const {
     if(_type == IPV4) {
-        uint8_t* addr = (uint8_t*)&((sockaddr_in*)_address)->sin_addr.s_addr;
-        return ct::to_string((int)*addr)+"."+ct::to_string((int)*(addr+1))+"."+ct::to_string((int)*(addr+2))+"."+ct::to_string((int)*(addr+3));
+		return to_string((sockaddr_in*)_address);
     }
+	else if(_type == IPV6) {
+		return to_string((sockaddr_in6*)_address);
+	}
     return "";
+}
+
+std::string NetAddress::to_string(sockaddr_in6* addr) {
+	addr = addr;
+	return "not implemented";
+}
+
+std::string NetAddress::to_string(sockaddr_in* addr) {
+	uint8_t* addr2 = (uint8_t*)&addr->sin_addr.s_addr;
+	return ct::to_string((int)*addr2)+"."+ct::to_string((int)*(addr2+1))+"."+ct::to_string((int)*(addr2+2))+"."+ct::to_string((int)*(addr2+3));
 }
 
 NetAddress& NetAddress::operator=(const NetAddress& origin) {

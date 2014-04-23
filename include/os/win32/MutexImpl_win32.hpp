@@ -9,12 +9,15 @@
 class MutexImpl_win32 {
 
 public:
-	MutexImpl_win32();
+    MutexImpl_win32();
+    ~MutexImpl_win32();
 
-	void lock();
-	void unlock();
+    void lock();
+    void unlock();
 private:
-	HANDLE _mutex;
+	MutexImpl_win32(const MutexImpl_win32& origin);
+	MutexImpl_win32& operator=(const MutexImpl_win32& origin);
+    HANDLE _mutex;
 
 };
 

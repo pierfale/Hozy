@@ -1,16 +1,30 @@
 #ifndef CLIENT_SELECTOR_HPP
 #define CLIENT_SELECTOR_HPP
 
-#include "data/server/Client.hpp"
+#ifdef UNIX
+#define SOCKET_ERROR -1
+#define ERR_NO errno
+#elif defined WIN32
+#include <winsock2.h>
+#include <windows.h>
+#define ERR_NO WSAGetLastError()
+#endif
+
+#include <vector>
+#include "tool/Mutex.hpp"
+
+class Client;
 
 class ClientSelector {
 
-	public:
-	ClientSelector(const std::vector<Client*>& data);
-	Client* next();
+public:
+    ClientSelector(const std::vector<Client*>& client_list, Mutex& mutex);
 
-	private:
-	const std::vector<Client*>& data;
+    unsigned int next();
+
+private:
+    const std::vector<Client*>& _client_list;
+	Mutex& _mutex;
 };
 
 #endif

@@ -1,7 +1,15 @@
 #include "network/SocketTcp.hpp"
 
-SocketTcp::SocketTcp() : _socket(0) {
+SocketTcp::SocketTcp() : _socket(), _status(DISCONNECTED){
 
+}
+
+SocketTcp::SocketTcp(const SocketTcp& origin __attribute__((unused))) : SocketTcp() {
+
+}
+
+SocketTcp& SocketTcp::operator=(const SocketTcp& origin __attribute__((unused))) {
+    return *this;
 }
 
 SocketTcp::~SocketTcp() {
@@ -47,7 +55,7 @@ void SocketTcp::connect(const NetAddress& address, unsigned int port) {
 }
 
 void SocketTcp::receive(Packet& packet) {
-    if(_socket == 0)
+    if(_status == CONNECTED)
         throw_error(E_SOCKET_CLOSED);
 
 	// Receive header
@@ -96,12 +104,10 @@ void SocketTcp::receive(Packet& packet) {
 
 	} while(curr < header.size);
 
-	std::cout << "Receive : " << std::endl << packet.to_string() << std::endl;
-
 }
 
 void SocketTcp::send(Packet& packet) {
-    if(_socket == 0)
+    if(_status == CONNECTED)
         throw_error(E_SOCKET_CLOSED);
 
 	std::size_t send_size = 0;
@@ -119,13 +125,29 @@ void SocketTcp::send(Packet& packet) {
 
 		send_size += err;
 	}
-
-	std::cout << "Send : " << std::endl << packet.to_string() << std::endl;
 }
 
 void SocketTcp::close() {
-    if(_socket == 0) {
+    if(_status == CONNECTED) {
         closesocket(_socket);
-        _socket = 0;
+        _status = DISCONNECTED;
     }
+}
+
+std::string SocketTcp::to_string() {
+    struct sockaddr_storage addr;
+    int size = sizeof(struct sockaddr_storage);
+
+	if(getpeername(_socket, (struct sockaddr*)&addr, &size) == SOCKET_ERROR) {
+        throw_error_os(E_ADDRESS_NOT_FOUND, ERR_NO);
+    }
+
+    if(addr.ss_family == AF_INET) {
+        struct sockaddr_in *s = (struct sockaddr_in *)&addr;
+		return NetAddress::to_string(s)+ct::to_string(ntohs(s->sin_port));
+    } else if(addr.ss_family == AF_INET6) {
+        struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
+		return NetAddress::to_string(s)+ct::to_string(ntohs(s->sin6_port));
+    }
+	return std::string();
 }

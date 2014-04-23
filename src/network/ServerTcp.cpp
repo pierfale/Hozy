@@ -1,6 +1,6 @@
 #include "network/ServerTcp.hpp"
 
-ServerTcp::ServerTcp() : _socket(0) {
+ServerTcp::ServerTcp() : _socket(), _status(DISCONNECTED) {
 
 }
 
@@ -14,7 +14,6 @@ void ServerTcp::listen(unsigned int port) {
 	if ((_socket = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
 		throw_error_os(E_SOCKET_CREATE_FAILED, ERR_NO);
 	}
-
 
 	struct sockaddr_in sin;
 	std::memset(&sin, 0, sizeof(struct sockaddr_in));
@@ -32,7 +31,7 @@ void ServerTcp::listen(unsigned int port) {
 }
 
 bool ServerTcp::accept(SocketTcp& socket) {
-	if(_socket == 0)
+    if(_status == CONNECTED)
 		throw_error(E_SOCKET_CLOSED);
 
 	if ((socket._socket = ::accept(_socket, NULL, NULL)) == INVALID_SOCKET) {
@@ -42,8 +41,8 @@ bool ServerTcp::accept(SocketTcp& socket) {
 }
 
 void ServerTcp::close() {
-	if(_socket == 0) {
+    if(_status == CONNECTED) {
 		closesocket(_socket);
-		_socket = 0;
+        _socket = DISCONNECTED;
 	}
 }

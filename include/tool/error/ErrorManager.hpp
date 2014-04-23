@@ -9,7 +9,7 @@
 #define fatal_error(msg) { error(msg) exit(EXIT_FAILURE); }
 #define throw_error(code) throw Exception(__FILE__, __FUNCTION__, __LINE__, code);
 #define throw_error_os(CODE_ERR,CODE_OS) {  int var_tmp = CODE_OS; throw Exception(__FILE__, __FUNCTION__, __LINE__, CODE_ERR, var_tmp); }
-
+#define throw_error_args(CODE_ERR, ARGS) throw Exception(__FILE__, __FUNCTION__, __LINE__, CODE_ERR, ARGS);
 
 void print_stack_call();
 

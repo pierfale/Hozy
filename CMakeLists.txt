@@ -4,7 +4,7 @@ project(Hozy)
 
 #define
 #set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -g -std=c++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Wall -Werror -Wextra -Wshadow -Weffc++ -Wstrict-aliasing -pedantic")
 
 include_directories(include)
 aux_source_directory(. SRC_LIST)

@@ -3,3 +3,7 @@
 Module::Module() {
 
 }
+
+Module::~Module() {
+
+}
