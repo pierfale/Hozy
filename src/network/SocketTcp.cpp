@@ -133,7 +133,7 @@ void SocketTcp::close() {
         _status = DISCONNECTED;
     }
 }
-
+/*
 std::string SocketTcp::to_string() {
     struct sockaddr_storage addr;
     int size = sizeof(struct sockaddr_storage);
@@ -157,3 +157,4 @@ std::string SocketTcp::to_string() {
 
     return *_address;
 }
+*/

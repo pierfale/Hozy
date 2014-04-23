@@ -37,8 +37,8 @@ public:
 	void receive(Packet& packet);
 	void send(Packet& packet);
     void close();
-
-    const NetAddress& get_address();
+/*
+    const NetAddress& get_address();*/
 
 private:
     SocketTcp(const SocketTcp& origin);

@@ -18,7 +18,7 @@ void UnauthenticatedClient::destroy() {
 
 void UnauthenticatedClient::add(Client* client) {
     instance()->_mutex.lock();
-    Log::ldebug << "[Network] New connexion from " << client->get_tcp_socket()->get_address().to_string() << std::endl;
+    //Log::ldebug << "[Network] New connexion from " << client->get_tcp_socket()->get_address().to_string() << std::endl;
     instance()->_list_client.push_back(client);
     instance()->_mutex.unlock();
 }

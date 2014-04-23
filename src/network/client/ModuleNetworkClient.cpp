@@ -22,19 +22,13 @@ void ModuleNetworkClient::destroy() {
 }
 
 void ModuleNetworkClient::run() {
-	try {
-		SocketTcp socket;
-		socket.connect(NetAddress("127.0.0.1"),50885);
+    SocketTcp socket;
+    socket.connect(NetAddress("127.0.0.1"),50885);
 
-		Packet packet;
-		std::string str("bonjour !");
-		std::cout << packet.to_string() << std::endl;
-		packet << str;
+    Packet packet;
+    std::string str("bonjour !");
+    std::cout << packet.to_string() << std::endl;
+    packet << str;
 
-		socket.send(packet);
-
-	}
-	catch(Exception const& e) {
-		Log::lerr << std::string(e.what()) << std::endl;
-	}
+    socket.send(packet);
 }
