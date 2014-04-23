@@ -1,4 +1,5 @@
 #include "os/unix/MutexImpl_unix.hpp"
+#include "tool/error/ErrorManager.hpp"
 
 #ifdef UNIX
 
@@ -7,10 +8,10 @@ MutexImpl_unix::MutexImpl_unix() : _mutex() {
 }
 
 MutexImpl_unix::~MutexImpl_unix() {
-    int err;
+    /*int err;
     if((err = pthread_mutex_destroy(&_mutex)) != 0) {
         throw_error_os(E_MUTEX_DESTROY_FAILED , err);
-    }
+    }*/
 }
 
 void MutexImpl_unix::lock() {

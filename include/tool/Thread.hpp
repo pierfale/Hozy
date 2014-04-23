@@ -41,7 +41,6 @@ public:
 private:
     THREAD_IMPLEMENTATION _impl;
 
-
 };
 
 #endif // THREAD_HPP

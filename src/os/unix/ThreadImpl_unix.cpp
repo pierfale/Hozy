@@ -7,6 +7,7 @@ ThreadImpl_unix::ThreadImpl_unix() : _thread() {
 }
 
 void ThreadImpl_unix::join() {
+    std::cout << (int)_thread << std::endl;
     int err = pthread_join(_thread, NULL);
     if(err!= 0)
         throw_error_os(E_THREAD_JOIN_FAILED, err);
