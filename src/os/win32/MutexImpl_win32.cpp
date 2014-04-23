@@ -1,4 +1,5 @@
 #include "os/win32/MutexImpl_win32.hpp"
+#include "tool/error/ErrorManager.hpp"
 
 #ifdef WIN32
 

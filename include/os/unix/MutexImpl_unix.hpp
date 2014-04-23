@@ -4,7 +4,6 @@
 #ifdef UNIX
 
 #include <pthread.h>
-#include "tool/error/ErrorManager.hpp"
 
 class MutexImpl_unix {
 

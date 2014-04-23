@@ -16,20 +16,14 @@
 class Exception : public std::exception {
 
 public:
-    Exception(const std::string& file, const std::string& function, int line, int error_code) throw() : _file(file), _function(function), _line(line), _error_code(error_code), _os_error_code(0), _args()  {
+    Exception(const std::string& file, const std::string& function, int line, int error_code) throw();
 
-    }
+    Exception(const std::string& file, const std::string& function, int line, int error_code, int os_error_code) throw();
 
-    Exception(const std::string& file, const std::string& function, int line, int error_code, int os_error_code) throw() : _file(file), _function(function), _line(line), _error_code(error_code), _os_error_code(os_error_code), _args() {
-
-    }
-
-    Exception(const std::string& file, const std::string& function, int line, int error_code, std::string args) throw() : _file(file), _function(function), _line(line), _error_code(error_code), _os_error_code(0), _args(args) {
-
-    }
+    Exception(const std::string& file, const std::string& function, int line, int error_code, std::string args) throw();
 
     virtual const char* what() const throw() {
-        return std::string("[Error] "+get_error_message(static_cast<ErrorCode>(_error_code))+(_args != "" ? " ("+_args+") ": "")+(_os_error_code != 0 ? " | Os error : "+os_message(_os_error_code) : "")+"\n"+_file+" in "+_function+" at line "+ct::to_string(_line)).c_str();
+        return _message.c_str();
     }
 
     int get_error_code() const {
@@ -56,6 +50,7 @@ private:
     int _error_code;
     int _os_error_code;
     std::string _args;
+    std::string _message;
 
 };
 

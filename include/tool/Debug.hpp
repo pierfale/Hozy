@@ -2,24 +2,28 @@
 #define DEBUG_HPP
 
 #ifdef WIN32
-#include "os/win32/Debug_win32.hpp"
-#define DEBUG_IMPLEMENTATION Debug_win32
+#include "os/win32/DebugImpl_win32.hpp"
+#define DEBUG_IMPLEMENTATION DebugImpl_win32
 #elif defined UNIX
-#include "os/unix/Debug_unix.hpp"
-#define DEBUG_IMPLEMENTATION Debug_unix
+#include "os/unix/DebugImp^l_unix.hpp"
+#define DEBUG_IMPLEMENTATION DebugImpl_unix
 #else
 #error "This Operating system is unsuported"
 #endif
 
+#include <fstream>
+#include "tool/Mutex.hpp"
 
 class Debug {
 
 public:
-	static std::string backtrace();
-	static void generate_core_dump(std::string pathname);
+	static void genrate_core_dump();
+	static std::string print_call_stack();
 
 private:
 	Debug();
+	static Mutex _mutex;
+	static std::ofstream _file;
 };
 
 #endif

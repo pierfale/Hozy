@@ -10,9 +10,15 @@
 #include "network/SocketTcp.hpp"
 #include <iostream>
 
+void exit_handler() {
+    //Destroy all registered singleton contains in SingletonManager
+    SingletonManager::destroy_all();
+}
+
 int main() {
 
     try {
+        atexit (exit_handler);
         //Register Log to SingletonManager
         Log::register_singleton("Log", 0);
 
@@ -47,9 +53,6 @@ int main() {
 
 		//wait all thread alive
 		ThreadManager::wait_all();
-
-        //Destroy all registered singleton contains in SingletonManager
-        SingletonManager::destroy_all();
 
     }
 	catch(Exception const& e) {

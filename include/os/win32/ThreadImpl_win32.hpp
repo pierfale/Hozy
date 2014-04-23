@@ -45,7 +45,6 @@ private:
 		}
 		catch(Exception const& e) {
 			Log::lerr << std::string(e.what()) << std::endl;
-			Debug::generate_core_dump("core_dump");
 			delete handler;
 			return e.get_error_code();
 		}

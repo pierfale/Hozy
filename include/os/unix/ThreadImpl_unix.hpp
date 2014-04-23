@@ -39,19 +39,18 @@ private:
 
     template<class Tclass, class Treturn, class... Targs>
     static void* proxy_member(void* arg) {
-		MemberFunction<Tclass, Treturn, Targs...>* handler = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
-
-		try {
-			MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
-		}
-		catch(Exception const& e) {
-			Log::lerr << std::string(e.what()) << std::endl;
-			delete handler;
-			return (void*)e.get_error_code();
-		}
-
+        pthread_detach(pthread_self());
+        MemberFunction<Tclass, Treturn, Targs...>* handler = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
+        try {
+            MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
+        }
+        catch(Exception const& e) {
+            Log::lerr << std::string(e.what()) << std::endl;
+            delete handler;
+            pthread_exit(nullptr);
+        }
         delete handler;
-        return nullptr;
+        pthread_exit(nullptr);
     }
 
 

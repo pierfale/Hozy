@@ -41,7 +41,6 @@ public:
 	void receive(Packet& packet);
 	void send(Packet& packet);
     void close();
-
 	std::string to_string();
 
 private:

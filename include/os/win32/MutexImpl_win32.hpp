@@ -4,7 +4,6 @@
 #ifdef WIN32
 
 #include <windows.h>
-#include "tool/error/ErrorManager.hpp"
 
 class MutexImpl_win32 {
 

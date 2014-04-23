@@ -49,7 +49,6 @@ int Server::start() {
         std::cerr.flush();
         std::cerr << std::string(e.what()) << std::endl;
         std::cerr.flush();
-		Debug::generate_core_dump("core_dump");
         return e.get_error_code();
     }
     return EXIT_SUCCESS;
