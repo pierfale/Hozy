@@ -1,6 +1,8 @@
 #include "os/win32/DebugImpl_win32.hpp"
 #include "tool/Convert.hpp"
 
+#ifdef WIN32
+
 DebugImpl_win32::DebugImpl_win32() {
 
 }
@@ -97,3 +99,5 @@ std::string DebugImpl_win32::print_call_stack() {
 
 	return str;
 }
+
+#endif

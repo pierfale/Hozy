@@ -12,6 +12,7 @@
 #include "tool/Convert.hpp"
 #include "tool/error/ErrorManager.hpp"
 #include "tool/log/Log.hpp"
+#include "ThreadManager.hpp"
 
 class ThreadImpl_unix {
 
@@ -31,15 +32,29 @@ public:
     void join();
     int id();
     bool is_alive();
+    void create_thread_from_this();
+    void debug();
+
     static int get_current_thread_id();
     static void sleep(unsigned int ms);
+
+    static void debug_handler(bool use_save_context);
 
 private:
     pthread_t _thread;
 
+
+
     template<class Tclass, class Treturn, class... Targs>
     static void* proxy_member(void* arg) {
-        pthread_detach(pthread_self());
+
+        struct sigaction sa;
+        sa.sa_handler = sig_usr1;
+        sigemptyset(&sa.sa_mask);
+        sa.sa_flags = 0;
+
+        sigaction (SIGUSR1, &sa, NULL);
+
         MemberFunction<Tclass, Treturn, Targs...>* handler = (MemberFunction<Tclass, Treturn, Targs...>*)arg;
         try {
             MemberFunction<Tclass, Treturn, Targs...>::static_call_with_saved_args(*handler);
@@ -47,12 +62,19 @@ private:
         catch(Exception const& e) {
             Log::lerr << std::string(e.what()) << std::endl;
             delete handler;
+
+            Debug::init();
+            Debug::set_exception(e);
+            ThreadManager::debug_all();
+            Debug::close();
+
             pthread_exit(nullptr);
         }
         delete handler;
         pthread_exit(nullptr);
     }
 
+    static void sig_usr1(int sig);
 
 
 };

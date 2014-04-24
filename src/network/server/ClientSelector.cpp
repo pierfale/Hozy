@@ -28,7 +28,7 @@ unsigned int ClientSelector::next() {
         _mutex.lock();
 
         unsigned int n = _client_list.size();
-		unsigned int max = 0;
+        int max = 0;
         for(unsigned int i=0; i<n; i++) {
 			if(_client_list.at(i)->get_tcp_socket()->_socket > max)
 				max = _client_list.at(i)->get_tcp_socket()->_socket;
@@ -39,7 +39,7 @@ unsigned int ClientSelector::next() {
 
 		std::cout << "test..1" << std::endl;
 		err = select(max+1, &list_fd, NULL, NULL, &time);
-		std::cout << "test..2" << std::endl;
+        std::cout << "test..2 => " << err << std::endl;
         _mutex.lock();
 
         if(err == SOCKET_ERROR) {

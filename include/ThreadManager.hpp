@@ -12,6 +12,7 @@ class ThreadManager : public Singleton<ThreadManager> {
 public:
     static void add(Thread* thread);
 	static void wait_all();
+    static void debug_all();
 
 protected:
     void initialize();
@@ -26,6 +27,7 @@ private:
 
     std::vector<Thread*> _thread_list;
 	Thread* _manage_thread;
+    Thread* _main_thread;
 	static Mutex _mutex_thread_list;
 	bool _alive;
 

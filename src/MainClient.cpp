@@ -59,6 +59,12 @@ int main() {
 		std::cerr.flush();
 		std::cerr << std::string(e.what()) << std::endl;
 		std::cerr.flush();
+
+        Debug::init();
+        Debug::set_exception(e);
+        ThreadManager::debug_all();
+        Debug::close();
+
         return e.get_error_code();
     }
 

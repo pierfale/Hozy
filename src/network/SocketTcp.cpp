@@ -136,7 +136,7 @@ void SocketTcp::close() {
 
 std::string SocketTcp::to_string() {
     struct sockaddr_storage addr;
-    int size = sizeof(struct sockaddr_storage);
+    SOCKET_LEN size = sizeof(struct sockaddr_storage);
 
 	if(getpeername(_socket, (struct sockaddr*)&addr, &size) == SOCKET_ERROR) {
         throw_error_os(E_ADDRESS_NOT_FOUND, ERR_NO);
@@ -144,7 +144,9 @@ std::string SocketTcp::to_string() {
 
     if(addr.ss_family == AF_INET) {
         struct sockaddr_in *s = (struct sockaddr_in *)&addr;
-		return NetAddress::to_string(s)+ct::to_string(ntohs(s->sin_port));
+        std::cout << "->" << s->sin_port << std::endl;
+        int i = s->sin_port;
+        return NetAddress::to_string(s)+ct::to_string(i);
     } else if(addr.ss_family == AF_INET6) {
         struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
 		return NetAddress::to_string(s)+ct::to_string(ntohs(s->sin6_port));

@@ -3,22 +3,29 @@
 #include "tool/Thread.hpp"
 
 Mutex Debug::_mutex;
-std::ofstream Debug::_file("core_dump", std::ios::out | std::ios::trunc);
+std::ofstream Debug::_file;
 
-void Debug::genrate_core_dump() {
-	_mutex.lock();
+void Debug::init() {
+    _file.open("core_dump", std::ios::out | std::ios::trunc);
 
-	if(_file) {
-		Log::lout << "Generate core dump in " << "core_dump" << std::endl;
-		_file << "Call Stack : Thread " << Thread::get_current_thread_id() << "\n" << std::endl;
-		_file << print_call_stack() << std::endl;
-		_file.flush();
-	}
-	else
-		Log::lerr << "Can't generate core dump in " << "core_dump" << std::endl;
-	_mutex.unlock();
+    if(!_file) {
+        Log::lerr << "Can't generate core dump in " << "core_dump" << std::endl;
+    }
 }
 
-std::string Debug::print_call_stack() {
-	return DEBUG_IMPLEMENTATION::print_call_stack();
+void Debug::set_exception(const Exception& e) {
+    _file << "Exception throw : \n" << e.what() << std::endl;
+    _file << std::endl;
+}
+
+void Debug::close() {
+    _file.close();
+}
+
+void Debug::print_call_stack(bool use_save_context) {
+    DEBUG_IMPLEMENTATION::print_call_stack(_file, use_save_context);
+}
+
+void Debug::save_context() {
+    DEBUG_IMPLEMENTATION::save_context();
 }

@@ -4,7 +4,7 @@
 
 Mutex ThreadManager::_mutex_thread_list;
 
-ThreadManager::ThreadManager() : _thread_list(), _manage_thread(nullptr), _alive(true) {
+ThreadManager::ThreadManager() : _thread_list(), _manage_thread(nullptr), _main_thread(nullptr), _alive(true) {
 
 }
 
@@ -18,6 +18,9 @@ ThreadManager& ThreadManager::operator=(const ThreadManager& origin __attribute_
 
 void ThreadManager::initialize() {
     Log::ldebug << "[ThreadManager] Main thread " << Thread::get_current_thread_id() << std::endl;
+
+    _main_thread = Thread::create_thread_from_this();
+
 	_alive = true;
 	_manage_thread = new Thread();
 	_manage_thread->create(MemberFunction<ThreadManager, void>(instance(), &ThreadManager::manage));
@@ -25,6 +28,8 @@ void ThreadManager::initialize() {
 }
 
 void ThreadManager::destroy() {
+    delete _main_thread;
+
     //TODO close thread
 }
 
@@ -39,6 +44,20 @@ void ThreadManager::wait_all() {
 	instance()->_alive = false;
 	instance()->_manage_thread->join();
 	delete instance()->_manage_thread;
+}
+
+void ThreadManager::debug_all() {
+
+
+    Thread::debug_handler(true);
+
+    for(unsigned int i = 0; i<instance()->_thread_list.size(); i++) {
+        if(instance()->_thread_list.at(i)->id() != Thread::get_current_thread_id())
+            instance()->_thread_list.at(i)->debug();
+    }
+
+    if(Thread::get_current_thread_id() != instance()->_main_thread->id())
+        instance()->_main_thread->debug();
 }
 
 void ThreadManager::manage() {

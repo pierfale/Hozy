@@ -38,6 +38,12 @@ public:
 		return s.str();
 	}
 
+
+    static std::string uint64_to_hex_string(uint64_t i) {
+        std::stringstream s;
+        s << std::hex << i;
+        return s.str();
+    }
 };
 
 #endif

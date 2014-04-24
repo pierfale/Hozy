@@ -1,6 +1,8 @@
 #ifndef DEBUG_IMPLEMENT_WIN32_HPP
 #define DEBUG_IMPLEMENT_WIN32_HPP
 
+#ifdef WIN32
+
 #include <string>
 #include <cstring>
 #include <windows.h>
@@ -16,5 +18,7 @@ public:
 private:
 	DebugImpl_win32();
 };
+
+#endif
 
 #endif

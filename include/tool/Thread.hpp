@@ -35,7 +35,13 @@ public:
 	int id();
 	bool is_alive();
 
+    void debug();
+
+    static void debug_handler(bool use_save_context = false);
+
 	static int get_current_thread_id();
+    static Thread* create_thread_from_this();
+
 	static void sleep(unsigned int ms);
 
 private:

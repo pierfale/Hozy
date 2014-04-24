@@ -8,6 +8,7 @@
 #define SOCKET_ERROR -1
 #define ERR_NO errno
 #define closesocket(sck) ::close(sck)
+#define SOCKET_LEN socklen_t
 #elif defined WIN32
 #include <winsock2.h>
 #include <windows.h>
@@ -16,6 +17,7 @@
 
 #define ERR_NO WSAGetLastError()
 #define inet_ntop InetNtop
+#define SOCKET_LEN int
 #endif
 
 #include "tool/error/ErrorManager.hpp"
