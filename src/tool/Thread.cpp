@@ -4,8 +4,8 @@ Thread::Thread() : _impl() {
 
 }
 
-void Thread::join() {
-    _impl.join();
+void Thread::join(bool must_be_alive) {
+    _impl.join(must_be_alive);
 }
 
 int Thread::id() {

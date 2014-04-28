@@ -40,7 +40,7 @@ file(
 #client
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/client)
 set(client_sources_files ${source_files})
-list(REMOVE_ITEM client_sources_files ${CMAKE_CURRENT_SOURCE_DIR}/src/MainServer.cpp)
+list(REMOVE_ITEM client_sources_files ${CMAKE_CURRENT_SOURCE_DIR}/src/server/MainServer.cpp)
 
 add_executable(
 	Hozy_Client
@@ -58,7 +58,7 @@ endif()
 #server
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin/${CMAKE_BUILD_TYPE}/server)
 set(server_sources_files ${source_files})
-list(REMOVE_ITEM server_sources_files ${CMAKE_CURRENT_SOURCE_DIR}/src/MainClient.cpp)
+list(REMOVE_ITEM server_sources_files ${CMAKE_CURRENT_SOURCE_DIR}/src/client/MainClient.cpp)
 
 add_executable(
 	Hozy_Server

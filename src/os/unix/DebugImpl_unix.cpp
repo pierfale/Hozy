@@ -6,6 +6,7 @@
 
 void* DebugImpl_unix::_save_stack[STACK_MAX_SIZE];
 int DebugImpl_unix::_save_stack_size(0);
+Mutex DebugImpl_unix::_mutex;
 
 DebugImpl_unix::DebugImpl_unix() {
 
@@ -17,6 +18,7 @@ DebugImpl_unix::~DebugImpl_unix() {
 
 void DebugImpl_unix::print_call_stack(std::ofstream& file, bool use_save_context) {
 
+    _mutex.lock();
     file << "Thread : " << Thread::get_current_thread_id() << std::endl;
 
     void* buffer[STACK_MAX_SIZE];
@@ -24,16 +26,14 @@ void DebugImpl_unix::print_call_stack(std::ofstream& file, bool use_save_context
     int size;
 
     if(use_save_context) {
-        std::cout << Thread::get_current_thread_id() << " : USE!" << std::endl;
         p_buffer = _save_stack;
         size = _save_stack_size;
     }
     else {
-        std::cout << Thread::get_current_thread_id() << " : NO USE!" << std::endl;
         p_buffer = buffer;
-        size = backtrace(buffer, STACK_MAX_SIZE);
-    }
+        size = backtrace(p_buffer, STACK_MAX_SIZE);
 
+    }
     char** str_c = backtrace_symbols(p_buffer, size);
 
     for(int i=0; i<size; i++) {
@@ -41,6 +41,7 @@ void DebugImpl_unix::print_call_stack(std::ofstream& file, bool use_save_context
     }
     file << std::endl;
     free(str_c);
+    _mutex.unlock();
 
 }
 

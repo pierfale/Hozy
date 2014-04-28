@@ -6,6 +6,7 @@
 #include <execinfo.h>
 #include <ucontext.h>
 #include <string>
+#include "tool/Mutex.hpp"
 
 #define STACK_MAX_SIZE 255
 
@@ -21,6 +22,7 @@ public:
 private:
     static void* _save_stack[STACK_MAX_SIZE];
     static int _save_stack_size;
+    static Mutex _mutex;
 
 };
 

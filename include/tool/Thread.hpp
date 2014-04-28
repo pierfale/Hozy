@@ -31,13 +31,13 @@ public:
         ThreadManager::add(this);
     }
 
-	void join();
+    void join(bool must_be_alive = true);
 	int id();
 	bool is_alive();
 
     void debug();
 
-    static void debug_handler(bool use_save_context = false);
+    static void debug_handler(bool use_save_context);
 
 	static int get_current_thread_id();
     static Thread* create_thread_from_this();
