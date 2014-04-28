@@ -5,12 +5,16 @@
 #include "tool/log/Log.hpp"
 #include "tool/error/ErrorManager.hpp"
 #include "tool/Thread.hpp"
+#include "tool/Config.hpp"
 #include "ThreadManager.hpp"
 #include "tool/Function.hpp"
 #include "network/SocketTcp.hpp"
 #include <iostream>
 
 void exit_handler() {
+    //wait all thread alive
+    ThreadManager::wait_all();
+
     //Destroy all registered singleton contains in SingletonManager
     SingletonManager::destroy_all();
 }
@@ -29,13 +33,16 @@ int main() {
 
         Log::lout << "Client start ..." << std::endl;
 
+        //Register Config to SingletonManager
+        Config::register_singleton("Config", 1);
+
         //Register the ModuleManager and threadManager to SingletonManager
-        ThreadManager::register_singleton("ThreadManager", 1);
-        ModuleManager::register_singleton("ModuleManager", 1);
+        ThreadManager::register_singleton("ThreadManager", 2);
+        ModuleManager::register_singleton("ModuleManager", 2);
 
         //Register all module to SingletonManager
-        ModuleView::register_singleton("ModuleView", 2);
-		ModuleNetworkClient::register_singleton("ModuleNetwork", 2);
+        ModuleView::register_singleton("ModuleView", 3);
+        ModuleNetworkClient::register_singleton("ModuleNetwork", 3);
 
 
         //Initialize all register singleton instance
@@ -50,9 +57,6 @@ int main() {
 
 		ModuleManager::start_thread("network");
 
-
-		//wait all thread alive
-		ThreadManager::wait_all();
 
     }
 	catch(Exception const& e) {

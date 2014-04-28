@@ -24,12 +24,12 @@ public:
         MemberFunction<Tclass, Treturn, Targs...>* handler = new MemberFunction<Tclass, Treturn, Targs...>(function);
         handler->save_parameter(arguments...);
         int err = pthread_create(&_thread, NULL, proxy_member<Tclass, Treturn, Targs...>, handler);
-
+        _thread_id.insert(std::pair<pthread_t, unsigned int>(_thread, _next_id++));
         if(err != 0)
             throw_error_os(E_THREAD_CREATE_FAILED, err);
     }
 
-    void join();
+    void join(bool must_be_alive);
     int id();
     bool is_alive();
     void create_thread_from_this();
@@ -47,9 +47,8 @@ private:
 
     template<class Tclass, class Treturn, class... Targs>
     static void* proxy_member(void* arg) {
-
         struct sigaction sa;
-        sa.sa_handler = sig_usr1;
+        sa.sa_handler = sig_usr;
         sigemptyset(&sa.sa_mask);
         sa.sa_flags = 0;
 
@@ -66,15 +65,17 @@ private:
             Debug::init();
             Debug::set_exception(e);
             ThreadManager::debug_all();
-            Debug::close();
-
             pthread_exit(nullptr);
+
         }
         delete handler;
         pthread_exit(nullptr);
     }
 
-    static void sig_usr1(int sig);
+    static void sig_usr(int sig);
+    static void sig_usr_main(int sig);
+    static std::map<pthread_t, unsigned int> _thread_id;
+    static unsigned int _next_id;
 
 
 };
