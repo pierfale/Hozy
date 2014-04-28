@@ -28,7 +28,7 @@ unsigned int ClientSelector::next() {
         _mutex.lock();
 
         unsigned int n = _client_list.size();
-        int max = 0;
+		SOCKET max = 0;
         for(unsigned int i=0; i<n; i++) {
 			if(_client_list.at(i)->get_tcp_socket()->_socket > max)
 				max = _client_list.at(i)->get_tcp_socket()->_socket;
@@ -49,6 +49,7 @@ unsigned int ClientSelector::next() {
             for(unsigned int i=0; i<n && i<_client_list.size(); i++) {
 				if(FD_ISSET(_client_list.at(i)->get_tcp_socket()->_socket, &list_fd)) {
 					 _mutex.unlock();
+					 std::cout << "Sck " << i << std::endl;
                     return i;
 				}
             }

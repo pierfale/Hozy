@@ -28,8 +28,6 @@ void ThreadManager::initialize() {
 }
 
 void ThreadManager::destroy() {
-    delete _main_thread;
-
     //TODO close thread
 }
 

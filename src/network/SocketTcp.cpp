@@ -129,7 +129,8 @@ void SocketTcp::send(Packet& packet) {
 
 void SocketTcp::close() {
     if(_status == CONNECTED) {
-        closesocket(_socket);
+		if(closesocket(_socket) == SOCKET_ERROR)
+			throw_error_os(E_SOCKET_CLOSE_FAILED, ERR_NO);
         _status = DISCONNECTED;
     }
 }

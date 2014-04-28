@@ -4,6 +4,7 @@
 #ifdef UNIX
 #define SOCKET_ERROR -1
 #define ERR_NO errno
+#define SOCKET int
 #elif defined WIN32
 #include <winsock2.h>
 #include <windows.h>

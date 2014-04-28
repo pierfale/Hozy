@@ -12,9 +12,9 @@ ThreadImpl_win32::ThreadImpl_win32(const ThreadImpl_win32& origin __attribute__(
 
 
 ThreadImpl_win32::~ThreadImpl_win32() {
-    if(CloseHandle(_thread) == 0) {
+	if(CloseHandle(_thread) == 0) {
         throw_error_os(E_THREAD_DESTROY_FAILED , GetLastError());
-    }
+	}
 }
 
 void ThreadImpl_win32::join() {
@@ -29,6 +29,18 @@ int ThreadImpl_win32::id() {
 
 bool ThreadImpl_win32::is_alive() {
 	return WaitForSingleObject(_thread, 0) != WAIT_OBJECT_0;
+}
+
+void ThreadImpl_win32::create_thread_from_this() {
+	_thread = GetCurrentThread();
+}
+
+void ThreadImpl_win32::debug() {
+	DEBUG_IMPLEMENTATION::print_call_stack(Debug::get_file(), false, _thread);
+}
+
+void ThreadImpl_win32::debug_handler(bool use_save_context) {
+	 Debug::print_call_stack(use_save_context);
 }
 
 int ThreadImpl_win32::get_current_thread_id() {

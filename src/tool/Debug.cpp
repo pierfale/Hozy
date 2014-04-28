@@ -29,3 +29,7 @@ void Debug::print_call_stack(bool use_save_context) {
 void Debug::save_context() {
     DEBUG_IMPLEMENTATION::save_context();
 }
+
+std::ofstream& Debug::get_file() {
+	return _file;
+}

@@ -26,6 +26,8 @@ public:
 
     static void save_context();
 
+	static std::ofstream& get_file();
+
 private:
 	Debug();
 	static Mutex _mutex;

@@ -11,6 +11,7 @@
 #include "tool/Convert.hpp"
 #include "tool/Function.hpp"
 #include "tool/Debug.hpp"
+#include "ThreadManager.hpp"
 
 class ThreadImpl_win32 {
 
@@ -32,8 +33,13 @@ public:
 	void join();
 	int id();
 	bool is_alive();
+	void create_thread_from_this();
+	void debug();
+
 	static int get_current_thread_id();
 	static void sleep(unsigned int ms);
+
+	static void debug_handler(bool use_save_context);
 
 private:
 	template<class Tclass, class Treturn, class... Targs>
@@ -45,6 +51,12 @@ private:
 		}
 		catch(Exception const& e) {
 			Log::lerr << std::string(e.what()) << std::endl;
+
+			Debug::init();
+			Debug::set_exception(e);
+			ThreadManager::debug_all();
+			Debug::close();
+
 			delete handler;
 			return e.get_error_code();
 		}
@@ -58,7 +70,6 @@ private:
 
 	DWORD _id;
 	HANDLE _thread;
-
 
 };
 

@@ -28,8 +28,10 @@ void UnauthenticatedClient::run() {
 	while(Server::is_running()) {
 		int index = _selector.next();
 		Client* client = _list_client.at(index);
+		std::cout << "->" << client->get_tcp_socket()->to_string() << std::endl;
 		Packet packet;
 		client->get_tcp_socket()->receive(packet);
+
 		if(packet.get_type() == P_AUTHENTICATION) {
 			std::string pseudo, password;
 			try {
