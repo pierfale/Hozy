@@ -42,9 +42,20 @@ class SingletonManager {
         /**
          * @brief SingletonInfo struct (intern struct) use to store Singleton's instance and priority
          */
+
+		enum State {
+			UNINITIALIZED,
+			INITIALIZED,
+			DESTROYED
+		};
+
         struct SingletonInfo {
+			SingletonInfo(ProtoSingleton* _instance, unsigned int _priority, State _state);
+
             ProtoSingleton* instance;
             unsigned int priority;
+			State state;
+
         };
 
     /**

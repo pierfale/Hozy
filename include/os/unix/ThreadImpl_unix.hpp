@@ -38,7 +38,7 @@ public:
     static int get_current_thread_id();
     static void sleep(unsigned int ms);
 
-    static void debug_handler(bool use_save_context);
+	static void debug__self(bool use_save_context);
 
 private:
     pthread_t _thread;

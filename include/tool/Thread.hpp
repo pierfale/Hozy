@@ -37,7 +37,7 @@ public:
 
     void debug();
 
-    static void debug_handler(bool use_save_context);
+	static void debug_self(bool use_save_context);
 
 	static int get_current_thread_id();
     static Thread* create_thread_from_this();

@@ -1,11 +1,12 @@
 #include "SingletonManager.hpp"
 #include "tool/log/Log.hpp"
 
+SingletonManager::SingletonInfo::SingletonInfo(ProtoSingleton* _instance, unsigned int _priority, State _state) : instance(_instance), priority(_priority), state(_state) {
+
+}
+
 void SingletonManager::add(const std::string& name, ProtoSingleton* instance, unsigned int priority) {
-    struct SingletonInfo info;
-    info.instance = instance;
-    info.priority = priority;
-    _singleton_list.insert(std::pair<std::string,struct SingletonInfo>(name, info));
+	_singleton_list.insert(std::pair<std::string,struct SingletonInfo>(name, SingletonInfo(instance, priority, UNINITIALIZED)));
     Log::ldebug << "[SingletonManager] Adding " << name << std::endl;
 }
 
@@ -22,11 +23,15 @@ void SingletonManager::initialize_all() {
             }
         }
 
-        Log::ldebug << "[SingletonManager] Initialize " << id_max << " (priority " << priority_max << ")" << std::endl;
+
 
         auto it = _singleton_list.find(id_max);
 
-        it->second.instance->initialize();
+		if(it->second.state == UNINITIALIZED) {
+			it->second.instance->initialize();
+			it->second.state = INITIALIZED;
+			Log::ldebug << "[SingletonManager] Initialize " << id_max << " (priority " << priority_max << ")" << std::endl;
+		}
         init_complete.push_back(id_max);
     }
 }
@@ -44,11 +49,14 @@ void SingletonManager::destroy_all() {
             }
         }
 
-        Log::ldebug << "[SingletonManager] Destroy " << id_max << " (priority " << priority_max << ")" << std::endl;
         auto it = _singleton_list.find(id_max);
 
-        it->second.instance->destroy();
-        delete it->second.instance;
+		if(it->second.state == INITIALIZED) {
+			Log::ldebug << "[SingletonManager] Destroy " << id_max << " (priority " << priority_max << ")" << std::endl;
+			it->second.instance->destroy();
+			it->second.state = DESTROYED;
+			delete it->second.instance;
+		}
         destroy_complete.push_back(id_max);
     }
 }

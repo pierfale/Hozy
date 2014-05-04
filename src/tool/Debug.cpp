@@ -20,7 +20,6 @@ void Debug::set_exception(const Exception& e) {
 
 void Debug::close() {
     _file.close();
-    std::cout << "CLOSE" << std::endl;
 }
 
 void Debug::print_call_stack(bool use_save_context) {

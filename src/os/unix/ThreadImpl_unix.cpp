@@ -52,12 +52,13 @@ void ThreadImpl_unix::sleep(unsigned int ms) {
     }
 }
 
-void ThreadImpl_unix::debug_handler(bool use_save_context) {
+void ThreadImpl_unix::debug_self(bool use_save_context) {
     Debug::print_call_stack(use_save_context);
 }
 
 void ThreadImpl_unix::sig_usr(int sig __attribute__((unused))) {
-    debug_handler(false);
+	debug_self(false);
+	pthread_exit(nullptr);
 }
 
 void ThreadImpl_unix::sig_usr_main(int sig __attribute__((unused))) {

@@ -13,7 +13,7 @@ public:
     virtual void destroy();
 
 protected:
-
+	virtual void default_value();
 
 private:
     ConfigClient();

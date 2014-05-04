@@ -22,13 +22,12 @@ void ModuleNetworkClient::destroy() {
 }
 
 void ModuleNetworkClient::run() {
-    SocketTcp socket;
-    socket.connect(NetAddress("127.0.0.1"),50885);
-
+	/*SocketTcp socket;
+	socket.connect(NetAddress("127.0.0.1"),4685);
     Packet packet;
     std::string str("bonjour !");
     std::cout << packet.to_string() << std::endl;
     packet << str;
 
-    socket.send(packet);
+	socket.send(packet);*/
 }

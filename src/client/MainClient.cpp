@@ -5,18 +5,14 @@
 #include "tool/log/Log.hpp"
 #include "tool/error/ErrorManager.hpp"
 #include "tool/Thread.hpp"
-#include "tool/Config.hpp"
+#include "client/ConfigClient.hpp"
 #include "ThreadManager.hpp"
 #include "tool/Function.hpp"
 #include "network/SocketTcp.hpp"
 #include <iostream>
 
 void exit_handler() {
-    //wait all thread alive
-    ThreadManager::wait_all();
-
-    //Destroy all registered singleton contains in SingletonManager
-    SingletonManager::destroy_all();
+	SingletonManager::destroy_all();
 }
 
 int main() {
@@ -34,7 +30,7 @@ int main() {
         Log::lout << "Client start ..." << std::endl;
 
         //Register Config to SingletonManager
-        Config::register_singleton("Config", 1);
+		ConfigClient::register_singleton("Config", 1);
 
         //Register the ModuleManager and threadManager to SingletonManager
         ThreadManager::register_singleton("ThreadManager", 2);
@@ -52,17 +48,23 @@ int main() {
         ModuleManager::register_module("view", ModuleView::instance());
 		ModuleManager::register_module("network", ModuleNetworkClient::instance());
 
+
+
         //Set events handler
 		//EventManager<NetworkEvent>::set_event_handler("view", "network", ModuleView::network_event_handler);
 
 		ModuleManager::start_thread("network");
 
+		//wait all thread alive
+		ThreadManager::wait_all();
+
+		//Destroy all registered singleton contains in SingletonManager
+		SingletonManager::destroy_all();
+
 
     }
 	catch(Exception const& e) {
-		std::cerr.flush();
-		std::cerr << std::string(e.what()) << std::endl;
-		std::cerr.flush();
+		std::cout << std::string(e.what()) << std::endl;
 
         Debug::init();
         Debug::set_exception(e);

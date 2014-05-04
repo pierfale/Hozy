@@ -8,6 +8,15 @@
 class ct {
 public:
 
+	/*
+	 *	std::string
+	 */
+	static std::string to_string(char c) {
+		std::stringstream s;
+		s << c;
+		return s.str();
+	}
+
     static std::string to_string(int i) {
         std::stringstream s;
         s << i;
@@ -25,6 +34,13 @@ public:
 		s << std::hex << i;
 		return s.str();
 	}
+
+	static std::string to_string(float f) {
+		std::stringstream s;
+		s << f;
+		return s.str();
+	}
+
 
 	static std::string to_hex_string(int i) {
 		std::stringstream s;
@@ -44,6 +60,11 @@ public:
         s << std::hex << i;
         return s.str();
     }
+
+	/*
+	 * double
+	 */
+
 };
 
 #endif

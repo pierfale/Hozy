@@ -39,6 +39,10 @@ void ThreadManager::add(Thread* thread) {
 }
 
 void ThreadManager::wait_all() {
+	if(instance()->_manage_thread == nullptr)
+		return;
+
+	Log::ldebug << "[ThreadManager] Wait all thread" << std::endl;
 
 	instance()->_alive = false;
 	instance()->_manage_thread->join();
@@ -48,26 +52,22 @@ void ThreadManager::wait_all() {
 }
 
 void ThreadManager::debug_all() {
-
-    Thread::debug_handler(true);
-
+	Log::ldebug << "[ThreadManager] Debug all thread" << std::endl;
+	Thread::debug_self(true);
     for(unsigned int i = 0; i<instance()->_thread_list.size(); i++) {
         if(instance()->_thread_list.at(i)->id() != Thread::get_current_thread_id() && instance()->_thread_list.at(i)->is_alive()) {
-            instance()->_thread_list.at(i)->debug();
+			instance()->_thread_list.at(i)->debug();
             instance()->_thread_list.at(i)->join(false);
         }
-    }
 
-    if(Thread::get_current_thread_id() != instance()->_main_thread->id())
+    }
+	if(instance()->_main_thread != nullptr && Thread::get_current_thread_id() != instance()->_main_thread->id())
         instance()->_main_thread->debug();
 }
 
 void ThreadManager::manage() {
 
 	while(instance()->_thread_list.size() > 1 || instance()->_alive) {
-
-
-
 		_mutex_thread_list.lock();
 
 		for(unsigned int i=0; i<instance()->_thread_list.size(); i++) {

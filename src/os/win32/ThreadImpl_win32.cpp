@@ -17,7 +17,7 @@ ThreadImpl_win32::~ThreadImpl_win32() {
 	}
 }
 
-void ThreadImpl_win32::join() {
+void ThreadImpl_win32::join(bool must_be_alive __attribute__((unused))) {
 	if(WaitForSingleObject(_thread, INFINITE) == WAIT_FAILED) {
 		throw_error_os(E_MUTEX_LOCK_FAILED , GetLastError());
 	}
@@ -33,13 +33,15 @@ bool ThreadImpl_win32::is_alive() {
 
 void ThreadImpl_win32::create_thread_from_this() {
 	_thread = GetCurrentThread();
+	_id = GetCurrentThreadId();
 }
 
 void ThreadImpl_win32::debug() {
 	DEBUG_IMPLEMENTATION::print_call_stack(Debug::get_file(), false, _thread);
+	TerminateThread(_thread, 0);
 }
 
-void ThreadImpl_win32::debug_handler(bool use_save_context) {
+void ThreadImpl_win32::debug_self(bool use_save_context) {
 	 Debug::print_call_stack(use_save_context);
 }
 

@@ -16,6 +16,11 @@ enum ErrorCode {
 
     E_SINGLETON_UNREGISTERED,
 
+	E_CONFIG_NOT_FOUND,
+	E_CONFIG_FILE_FORMAT,
+
+	E_FILE_NOT_FOUND,
+
     E_OUT_OF_RANGE,
 
     //Network errors

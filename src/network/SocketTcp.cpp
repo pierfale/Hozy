@@ -20,17 +20,12 @@ void SocketTcp::connect(const NetAddress& address, unsigned int port) {
     close();
 
     if(address.type() == NetAddress::IPV4) {
-
-
-
-		if((_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
+		if((_socket = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
             throw_error_os(E_SOCKET_CREATE_FAILED, ERR_NO);
         }
-
         struct sockaddr_in addr_in;
         memcpy(&addr_in, address.address(), sizeof(struct sockaddr_in));
 		addr_in.sin_port = htons(port);
-
 
 		if(::connect(_socket, (const sockaddr*)&addr_in, sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
             throw_error_os(E_SOCKET_CONNECT_FAILED, ERR_NO);
@@ -145,7 +140,6 @@ std::string SocketTcp::to_string() {
 
     if(addr.ss_family == AF_INET) {
         struct sockaddr_in *s = (struct sockaddr_in *)&addr;
-        std::cout << "->" << s->sin_port << std::endl;
         int i = s->sin_port;
         return NetAddress::to_string(s)+ct::to_string(i);
     } else if(addr.ss_family == AF_INET6) {

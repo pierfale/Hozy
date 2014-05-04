@@ -20,8 +20,8 @@ void Thread::debug() {
     _impl.debug();
 }
 
-void Thread::debug_handler(bool use_save_context) {
-    THREAD_IMPLEMENTATION::debug_handler(use_save_context);
+void Thread::debug_self(bool use_save_context) {
+	THREAD_IMPLEMENTATION::debug_self(use_save_context);
 }
 
 int Thread::get_current_thread_id() {

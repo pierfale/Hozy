@@ -30,7 +30,7 @@ public:
 	}
     ~ThreadImpl_win32();
 
-	void join();
+	void join(bool must_be_alive);
 	int id();
 	bool is_alive();
 	void create_thread_from_this();
@@ -39,7 +39,7 @@ public:
 	static int get_current_thread_id();
 	static void sleep(unsigned int ms);
 
-	static void debug_handler(bool use_save_context);
+	static void debug_self(bool use_save_context);
 
 private:
 	template<class Tclass, class Treturn, class... Targs>
