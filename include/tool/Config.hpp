@@ -23,10 +23,22 @@ public:
 		if(!ConfigData<T>::has(key))
 			ConfigData<T>::set(key, value);
 	}
+
 	template <class T>
 	static T get(const std::string& key) {
 		return ConfigData<T>::get(key);
 	}
+
+	template <class T>
+	static bool has(const std::string& key) {
+		return ConfigData<T>::has(key);
+	}
+
+	template <class T>
+	static void remove(const std::string& key) {
+		return ConfigData<T>::remove(key);
+	}
+
 
 	static void save_config(const std::string& pathname);
 
