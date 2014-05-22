@@ -9,27 +9,22 @@ Config::Config() {
 Config::~Config() {
 
 }
-
-template <class T>
-static void set(std::string key, T value) {
-	ConfigData<T>::set(key, value);
-}
-
-template <class T>
-static T get(std::string key) {
-	return ConfigData<T>::get(key);
-}
-
+/*
 template <>
-void Config::set<const char*>(std::string key, const char* value) {
+void Config::set<const char*>(const std::string& key, const char* value) {
 	Config::set<std::string>(key, std::string(value));
 }
 
 template <>
-const char* Config::get<const char*>(std::string key) {
-	return Config::get<std::string>(key).c_str();
+void Config::set_if_not_exist<const char*>(const std::string& key, const char* value) {
+	Config::set_if_not_exist<std::string>(key, std::string(value));
 }
 
+template <>
+const char* Config::get<const char*>(const std::string& key) {
+	return Config::get<std::string>(key).c_str();
+}
+*/
 
 void Config::load_config(const std::string& pathname) {
 
@@ -104,4 +99,32 @@ void Config::eval_line(const std::string& line, unsigned int line_n, const std::
             }
         }
 	}
+}
+
+void Config::save_config(const std::string& pathname) {
+	std::ofstream file(pathname.c_str(), std::ios::out | std::ios::trunc);
+
+	if(!file)
+		throw_error_args(E_FILE_OPEN_FAILED, pathname);
+/*
+
+	std::vector<std::string> keys = ConfigData<std::string>::get_key_set();
+
+	for(auto& key : keys) {
+		std::string value = ConfigData<std::string>::get(key);
+		if(need_quote(value))
+			file << key << " = \"" << value << "\"" << std::endl;
+		else
+			file << key << " = " << value << std::endl;
+	}*/
+
+
+}
+
+bool Config::need_quote(const std::string& value) {
+	for(unsigned int i=0; i<value.length(); i++) {
+		if(isspace(value.at(i)))
+			return true;
+	}
+	return false;
 }

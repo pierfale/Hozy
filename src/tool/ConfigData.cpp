@@ -1,10 +1,21 @@
 #include "tool/ConfigData.hpp"
 
+template<>
+int DataConvert<float, int>::convert(float origin) {
+	return static_cast<int>(origin);
+}
+
+template<>
+bool DataConvert<float, int>::allowed(float origin) {
+	return (float)((int)origin) == origin;
+}
+
 /*
  *	int
  */
 
 //Can concert float to int if number has 0 decimal
+/*
 template<>
 template<>
 bool ConfigData<int>::can_convert<float>(float origin, int* target) {
@@ -40,11 +51,22 @@ bool ConfigData<int>::has(std::string key) {
 	return _value.find(key) != _value.end();
 }
 
+template<>
+std::vector<std::string> ConfigData<int>::get_key_set() {
+	std::vector<std::string> set;
+
+	for(auto it = _value.begin(); it != _value.end(); ++it)
+		set.push_back(it->first);
+
+	return set;
+}
+*/
 /*
  * float
  */
 
 //Can concert string to float if it's a number represented under a string
+/*
 template<>
 template<>
 bool ConfigData<float>::can_convert<std::string>(std::string origin, float* target) {
@@ -85,6 +107,7 @@ float ConfigData<float>::get(std::string key) {
 	throw_error_args(E_CONFIG_NOT_FOUND, key);
 }
 
+
 template<>
 bool ConfigData<float>::has(std::string key) {
 	return _value.find(key) != _value.end() || ConfigData<int>::has(key);
@@ -101,11 +124,23 @@ void ConfigData<float>::_remove(std::string key, bool recursive) {
 		ConfigData<int>::_remove(key, true);
 }
 
+template<>
+std::vector<std::string> ConfigData<float>::get_key_set() {
+	std::vector<std::string> set;
+
+	for(auto it = _value.begin(); it != _value.end(); ++it)
+		set.push_back(it->first);
+
+	std::vector<std::string> set2 = ConfigData<int>::get_key_set();
+	set.insert(set.end(), set2.begin(), set2.end());
+	return set;
+}
+*/
 
 /*
  * std::string
  */
-
+/*
 template<>
 template<class T2>
 bool ConfigData<std::string>::can_convert(T2 origin, std::string* target) {
@@ -146,8 +181,10 @@ std::string ConfigData<std::string>::get(std::string key) {
 	throw_error_args(E_CONFIG_NOT_FOUND, key);
 }
 
+
 template<>
 bool ConfigData<std::string>::has(std::string key) {
+	std::cout << (_value.find(key) != _value.end()) << std::endl;
 	return _value.find(key) != _value.end() || ConfigData<float>::has(key);
 }
 
@@ -161,3 +198,18 @@ void ConfigData<std::string>::_remove(std::string key, bool recursive) {
 	if(recursive)
 		ConfigData<float>::_remove(key, true);
 }
+
+
+template<>
+std::vector<std::string> ConfigData<std::string>::get_key_set() {
+	std::vector<std::string> set;
+
+	for(auto it = _value.begin(); it != _value.end(); ++it)
+		set.push_back(it->first);
+
+	std::vector<std::string> set2 = ConfigData<float>::get_key_set();
+	set.insert(set.end(), set2.begin(), set2.end());
+	return set;
+}
+
+*/

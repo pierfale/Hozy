@@ -20,6 +20,7 @@ enum ErrorCode {
 	E_CONFIG_FILE_FORMAT,
 
 	E_FILE_NOT_FOUND,
+	E_FILE_OPEN_FAILED,
 
     E_OUT_OF_RANGE,
 
